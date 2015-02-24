@@ -18,8 +18,8 @@ namespace Tests
             {
                 new KeywordMatcher("{", TokenType.LeftBracket, null),
                 new KeywordMatcher("}", TokenType.RightBracket, null),
-                new KeywordMatcher("[", TokenType.LeftBracket, null),
-                new KeywordMatcher("]", TokenType.LeftBracket, null),
+                new KeywordMatcher("[", TokenType.LeftSqrBracket, null),
+                new KeywordMatcher("]", TokenType.RightSqrBracket, null),
                 new KeywordMatcher("==", TokenType.Equals, null),    
                 new KeywordMatcher("+=", TokenType.AddAssign, null),   
                 new KeywordMatcher("-=", TokenType.SubAssign, null),   

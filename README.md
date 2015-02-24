@@ -9,4 +9,5 @@ Library to handle interaction with the ME3 versions of UnrealScript, intended to
 
 # Credits
 - ME3Explorer, all involved! (see http://me3explorer.wikia.com/wiki/About_Us)
+- Eliot van Uytfanghe, eliotvu.com, for a good source of information via his unrealscript library.
 - Anton Kropp from onoffswitch.net, for a very understandable basic lexer/parser to use as starting point.

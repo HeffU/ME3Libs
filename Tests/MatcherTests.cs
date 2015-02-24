@@ -207,10 +207,45 @@ namespace Tests
             Assert.AreEqual(matcher.MatchNext(data).Value, "\\n");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
-            // Ensure discarding of string that reaches eof without closing bracket
+            // Ensure discarding of string that reaches eof without closing quote
             Assert.IsNull(matcher.MatchNext(data));
             Assert.AreEqual(data.CurrentItem, "\"");
 
+        }
+
+        [TestMethod]
+        public void TestNameLiteralMatcher()
+        {
+            NameLiteralMatcher matcher = new NameLiteralMatcher();
+            StringTokenizer data = new StringTokenizer("'A' 'name_0xA2' '' 'n\\ame' 'Bob bobson' '\"Bob\"' 'eof");
+
+            // Match basic name
+            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Match name with underscore and digit
+            Assert.AreEqual(matcher.MatchNext(data).Value, "name_0xA2");
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Match empty name
+            Assert.AreEqual(matcher.MatchNext(data).Value, "");
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Fail escape char
+            Assert.IsNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, "'");
+            data.Advance(8);
+            // Fail whitespace
+            Assert.IsNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, "'");
+            data.Advance(13);
+            // Fail quotes
+            Assert.IsNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, "'");
+            data.Advance(8);
+            // Ensure discarding of name that reaches eof without closing single-quote
+            Assert.IsNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, "'");
         }
     }
 }

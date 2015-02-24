@@ -181,5 +181,36 @@ namespace Tests
 
             Assert.IsTrue(data.AtEnd());
         }
+
+        [TestMethod]
+        public void TestStringLiteralMatcher()
+        {
+            StringLiteralMatcher matcher = new StringLiteralMatcher();
+            StringTokenizer data = new StringTokenizer("\"str\" \"\"\"test\" \"\\\"\" \"\\n\" \"eof");
+
+            // Match basic string
+            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Match empty string
+            Assert.AreEqual(matcher.MatchNext(data).Value, "");
+            Assert.AreEqual(data.CurrentItem, "\"");
+            // Ensure non-empty string contents
+            Assert.AreEqual(matcher.MatchNext(data).Value, "test");
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Match escape char
+            Assert.AreEqual(matcher.MatchNext(data).Value, "\\\"");
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Include but dont react to other escape chars
+            Assert.AreEqual(matcher.MatchNext(data).Value, "\\n");
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Ensure discarding of string that reaches eof without closing bracket
+            Assert.IsNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, "\"");
+
+        }
     }
 }

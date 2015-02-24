@@ -138,10 +138,19 @@ namespace Tests
         public void TestWordMatcher()
         {
             WordMatcher matcher = new WordMatcher(Delimiters);
-            StringTokenizer data = new StringTokenizer("test test2+end");
+            StringTokenizer data = new StringTokenizer("test \"'test test2+end");
 
             // Match a basic word
             Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.AreEqual(data.CurrentItem, " ");
+            data.Advance();
+            // Ensure that string/name tokens are not considered 
+            // as they are exempt from the delimiters.
+            Assert.IsNull(matcher.MatchNext(data));
+            data.Advance();
+            Assert.IsNull(matcher.MatchNext(data));
+            data.Advance();
+            Assert.AreEqual(matcher.MatchNext(data).Value, "test");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match a word containing a number

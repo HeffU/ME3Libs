@@ -4,6 +4,7 @@ using System.Linq;
 using ME3Script;
 using System.Globalization;
 using System.Collections.Generic;
+using ME3Script.Lexing.Tokenizing;
 
 namespace Tests
 {

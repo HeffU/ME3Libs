@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ME3Script;
 using ME3Script.Lexing.Matching.StringMatchers;
 using System.Collections.Generic;
+using ME3Script.Lexing.Tokenizing;
 
 namespace Tests
 {

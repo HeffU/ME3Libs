@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ME3Script;
+using ME3Script.Lexing;
+using ME3Script.Lexing.Tokenizing;
 
 namespace Tests
 {

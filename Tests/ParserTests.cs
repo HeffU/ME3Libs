@@ -17,7 +17,7 @@ namespace Tests
         {
             var source = 
                 "class Test extends Actor Deprecated Transient; \n" +
-                "var int X; \n" +
+                "var private deprecated int X; \n" +
                 "VAR INT Y; \n";
 
             List<AbstractType> types = new List<AbstractType>

@@ -17,6 +17,11 @@ namespace Tests
         {
             var source = 
                 "class Test extends Actor Deprecated Transient; \n" +
+                "enum ETestnumeration {\n" +
+                "     TEST_value1,\n" +
+                "     TEST_value2,\n" +
+                "     TEST_value3,\n" +
+                "};\n" +
                 "var private deprecated int X; \n" +
                 "VAR INT Y; \n";
 

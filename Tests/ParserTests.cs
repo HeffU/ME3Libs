@@ -17,13 +17,14 @@ namespace Tests
         {
             var source = 
                 "class Test extends Actor Deprecated Transient; \n" +
-                "enum ETestnumeration {\n" +
+                "var enum ETestnumeration {\n" +
                 "     TEST_value1,\n" +
                 "     TEST_value2,\n" +
                 "     TEST_value3,\n" +
-                "};\n" +
+                "} inlineNumeration, testnum2;\n" +
                 "var private deprecated int X; \n" +
-                "VAR INT Y; \n";
+                "VAR INT Y, Z; \n" +
+                "var ETestnumeration testnum;\n";
 
             List<AbstractType> types = new List<AbstractType>
             {

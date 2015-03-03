@@ -24,7 +24,13 @@ namespace Tests
                 "} inlineNumeration, testnum2;\n" +
                 "var private deprecated int X; \n" +
                 "VAR INT Y, Z; \n" +
-                "var ETestnumeration testnum;\n";
+                "var ETestnumeration testnum;\n" +
+                "struct transient testStruct\n" +
+                "{ var int a, b, c; };\n" +
+                "var private struct transient twoStruct extends testStruct\n" +
+                "{\n" +
+                "   var etestnumeration num;\n" +
+                "} structA, structB;\n";
 
             List<AbstractType> types = new List<AbstractType>
             {

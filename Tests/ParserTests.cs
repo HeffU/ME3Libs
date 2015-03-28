@@ -6,6 +6,7 @@ using ME3Script.Language.Types;
 using System.Collections.Generic;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Language.Nodes;
+using ME3Script.Language.Tree;
 
 namespace Tests
 {
@@ -16,7 +17,7 @@ namespace Tests
         public void BasicClassTest()
         {
             var source = 
-                "class Test extends Actor Deprecated Transient; \n" +
+                "class Test extends Actor Deprecated Transient; \n"/* +
                 "var enum ETestnumeration {\n" +
                 "     TEST_value1,\n" +
                 "     TEST_value2,\n" +
@@ -30,18 +31,11 @@ namespace Tests
                 "var private struct transient twoStruct extends testStruct\n" +
                 "{\n" +
                 "   var etestnumeration num;\n" +
-                "} structA, structB;\n";
+                "} structA, structB;\n"*/;
 
-            List<AbstractType> types = new List<AbstractType>
-            {
-                new BasicDataType("int", TokenType.Int)
-            };
-            TypeManager.InitializeGlobalNamespace(types);
+            var parser = new StringParser(new StringLexer(source));
 
-            var typeMgr = new TypeManager();
-            var parser = new StringParser(new StringLexer(source), typeMgr);
-
-            ClassNode node = parser.ParseClassSkeleton() as ClassNode;
+            Class node = (Class)parser.ParseDocument();
             return;
         }
     }

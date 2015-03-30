@@ -17,7 +17,7 @@ namespace Tests
         public void BasicClassTest()
         {
             var source = 
-                "class Test extends Actor within Object Deprecated Transient; \n"/* +
+                "class Test extends Actor within Object Deprecated Transient; \n" +
                 "var enum ETestnumeration {\n" +
                 "     TEST_value1,\n" +
                 "     TEST_value2,\n" +
@@ -31,7 +31,7 @@ namespace Tests
                 "var private struct transient twoStruct extends testStruct\n" +
                 "{\n" +
                 "   var etestnumeration num;\n" +
-                "} structA, structB;\n"*/;
+                "} structA, structB;\n";
 
             var parser = new StringParser(new StringLexer(source));
 

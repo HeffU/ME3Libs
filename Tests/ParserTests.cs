@@ -17,7 +17,7 @@ namespace Tests
         public void BasicClassTest()
         {
             var source = 
-                "class Test extends Actor Deprecated Transient; \n"/* +
+                "class Test extends Actor within Object Deprecated Transient; \n"/* +
                 "var enum ETestnumeration {\n" +
                 "     TEST_value1,\n" +
                 "     TEST_value2,\n" +

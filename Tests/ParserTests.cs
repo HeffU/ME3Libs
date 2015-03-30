@@ -31,7 +31,7 @@ namespace Tests
                 "   var etestnumeration num;\n" +
                 "} structA, structB;\n";
 
-            var parser = new StringParser(new StringLexer(source));
+            var parser = new StringParser(new TokenStream<String>(new StringLexer(source)));
 
             Class node = (Class)parser.ParseDocument();
             return;

@@ -2,10 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ME3Script.Parsing;
 using ME3Script.Lexing;
-using ME3Script.Language.Types;
 using System.Collections.Generic;
 using ME3Script.Lexing.Tokenizing;
-using ME3Script.Language.Nodes;
 using ME3Script.Language.Tree;
 
 namespace Tests

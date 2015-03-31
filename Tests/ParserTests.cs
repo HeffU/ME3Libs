@@ -5,6 +5,7 @@ using ME3Script.Lexing;
 using System.Collections.Generic;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Language.Tree;
+using ME3Script.Utilities;
 
 namespace Tests
 {

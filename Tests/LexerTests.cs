@@ -29,6 +29,23 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestLexerSubData()
+        {
+            String source = "+ \n \nasd , hey";
+            var lexer = new StringLexer(source);
+            var tokens = lexer.LexSubData(new SourcePosition(1, 0, 4), new SourcePosition(2, 3, 8));
+            var enumerator = tokens.GetEnumerator();
+            enumerator.MoveNext();
+
+            // Ensure that the token has correct positions
+            var token = enumerator.Current;
+            Assert.AreEqual(token.StartPosition, new SourcePosition(2, 0, 5));
+            Assert.AreEqual(token.EndPosition, new SourcePosition(2, 3, 8));
+            // Make sure that the lexer did not parse further than the end of the subdata
+            Assert.IsFalse(enumerator.MoveNext());
+        }
+
+        [TestMethod]
         public void TestLexerTokenPositions()
         {
             String source = "+135.2 \n 'hello'\n\n";

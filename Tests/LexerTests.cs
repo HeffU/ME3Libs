@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ME3Script;
 using ME3Script.Lexing;
 using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 
 namespace Tests
 {
@@ -23,6 +24,36 @@ namespace Tests
             Assert.AreEqual(lexer.GetNextToken().Type, TokenType.INVALID);
             // Assert that after an invalid token the stream advances
             Assert.AreEqual(lexer.GetNextToken().Value, "asd");
+            // Assert that EOF is returned at the end of the stream
+            Assert.AreEqual(lexer.GetNextToken().Type, TokenType.EOF);
+        }
+
+        [TestMethod]
+        public void TestLexerTokenPositions()
+        {
+            String source = "+135.2 \n 'hello'\n\n";
+            var lexer = new StringLexer(source);
+
+            // Check that the initial token has correct start and end positions
+            var token = lexer.GetNextToken();
+            Assert.AreEqual(token.StartPosition, new SourcePosition(0, 0, 0));
+            Assert.AreEqual(token.EndPosition, new SourcePosition(0, 1, 1));
+            // Check that matching a number token reports expected result
+            token = lexer.GetNextToken();
+            Assert.AreEqual(token.StartPosition, new SourcePosition(0, 1, 1));
+            Assert.AreEqual(token.EndPosition, new SourcePosition(0, 6, 6));
+            // Check that a newline is handled correctly
+            var whitespace = lexer.GetNextToken();
+            Assert.AreEqual(whitespace.StartPosition, new SourcePosition(0, 6, 6));
+            Assert.AreEqual(whitespace.EndPosition, new SourcePosition(1, 1, 9));
+            // Check that name literal reports as expected
+            token = lexer.GetNextToken();
+            Assert.AreEqual(token.StartPosition, new SourcePosition(1, 1, 9));
+            Assert.AreEqual(token.EndPosition, new SourcePosition(1, 8, 16));
+            // Check that several newlines are handled correctly
+            whitespace = lexer.GetNextToken();
+            Assert.AreEqual(whitespace.StartPosition, new SourcePosition(1, 8, 16));
+            Assert.AreEqual(whitespace.EndPosition, new SourcePosition(3, 0, 18));
             // Assert that EOF is returned at the end of the stream
             Assert.AreEqual(lexer.GetNextToken().Type, TokenType.EOF);
         }

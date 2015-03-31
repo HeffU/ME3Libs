@@ -4,6 +4,7 @@ using ME3Script;
 using ME3Script.Lexing.Matching.StringMatchers;
 using System.Collections.Generic;
 using ME3Script.Lexing.Tokenizing;
+using ME3Script.Utilities;
 
 namespace Tests
 {
@@ -62,17 +63,18 @@ namespace Tests
         {
             WhiteSpaceMatcher matcher = new WhiteSpaceMatcher();
             StringTokenizer data = new StringTokenizer(" ,   \n   test ");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match a single whitespace
-            Assert.AreEqual(matcher.MatchNext(data).Type, TokenType.WhiteSpace);
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Type, TokenType.WhiteSpace);
             Assert.AreEqual(data.CurrentItem, ",");
             data.Advance();
             // Match a longer mixed whitespace and check that all of it is discarded
-            Assert.IsNull(matcher.MatchNext(data).Value);
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos).Value);
             Assert.AreEqual(data.CurrentItem, "t");
             data.Advance(4);
             // Match EOF whitespace
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
 
             Assert.IsTrue(data.AtEnd());
         }
@@ -82,53 +84,54 @@ namespace Tests
         {
             NumberMatcher matcher = new NumberMatcher(Delimiters);
             StringTokenizer data = new StringTokenizer("1 454 12h 0xa 0x 0xA12 0x1G 1.0 0.33 0x22.3 123.13a 1xA");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match a single integer
-            Assert.AreEqual(matcher.MatchNext(data).Value, "1");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "1");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match several chars
-            Assert.AreEqual(matcher.MatchNext(data).Type, TokenType.IntegerNumber);
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Type, TokenType.IntegerNumber);
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Try to match a number that is actually a word
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "1");
             data.Advance(4);
             // Match a hexadecimal number
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // fail to match a partial hex number
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "0");
             data.Advance(3);
             // Match and assert value of hexadecimal number converted to decimal
-            Assert.AreEqual(matcher.MatchNext(data).Value, (0xA12).ToString("D"));
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, (0xA12).ToString("D"));
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // fail to match a malformed hex number
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "0");
             data.Advance(5);
             // Match a floating point number
-            Assert.AreEqual(matcher.MatchNext(data).Type, TokenType.FloatingNumber);
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Type, TokenType.FloatingNumber);
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match a float and assert value
-            Assert.AreEqual(matcher.MatchNext(data).Value, "0.33");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "0.33");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Fail parsing a malformed hex-float
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "0");
             data.Advance(7);
             // Fail parsing a malformed float-hex
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "1");
             data.Advance(8);
             // Fail parsing a malformed hex prefix
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "1");
             data.Advance(3);
 
@@ -140,26 +143,27 @@ namespace Tests
         {
             WordMatcher matcher = new WordMatcher(Delimiters);
             StringTokenizer data = new StringTokenizer("test \"'test test2+end");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match a basic word
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Ensure that string/name tokens are not considered 
             // as they are exempt from the delimiters.
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             data.Advance();
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             data.Advance();
-            Assert.AreEqual(matcher.MatchNext(data).Value, "test");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "test");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match a word containing a number
-            Assert.AreEqual(matcher.MatchNext(data).Value, "test2");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "test2");
             Assert.AreEqual(data.CurrentItem, "+");
             data.Advance();
             // Ensure token type and EOF handling
-            Assert.AreEqual(matcher.MatchNext(data).Type, TokenType.Word);
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Type, TokenType.Word);
 
             Assert.IsTrue(data.AtEnd());
         }
@@ -169,25 +173,26 @@ namespace Tests
         {
             KeywordMatcher matcher = new KeywordMatcher("invalid", TokenType.INVALID, Delimiters, false);
             StringTokenizer data = new StringTokenizer("+=+//= invalid=invalidinvalid$=");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match a basic delimiter keyword
-            Assert.AreEqual(Delimiters.Find(m => m.Keyword == "+=").MatchNext(data).Type, TokenType.AddAssign);
+            Assert.AreEqual(Delimiters.Find(m => m.Keyword == "+=").MatchNext(data, ref streamPos).Type, TokenType.AddAssign);
             Assert.AreEqual(data.CurrentItem, "+");
             data.Advance();
             // Assert that the matched token contains the value
-            Assert.AreEqual(Delimiters.Find(m => m.Keyword == "/").MatchNext(data).Value, "/");
+            Assert.AreEqual(Delimiters.Find(m => m.Keyword == "/").MatchNext(data, ref streamPos).Value, "/");
             Assert.AreEqual(data.CurrentItem, "/");
             data.Advance(3);
             // Match against a keyword rather than short operator as well as delimiter
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "=");
             data.Advance();
             // Assert that non-delimiters will prevent a match
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "i");
             data.Advance(14);
             // Ensure EOF with keywords
-            Assert.IsNotNull(Delimiters.Find(m => m.Keyword == "$=").MatchNext(data));
+            Assert.IsNotNull(Delimiters.Find(m => m.Keyword == "$=").MatchNext(data, ref streamPos));
 
             Assert.IsTrue(data.AtEnd());
         }
@@ -197,28 +202,29 @@ namespace Tests
         {
             StringLiteralMatcher matcher = new StringLiteralMatcher();
             StringTokenizer data = new StringTokenizer("\"str\" \"\"\"test\" \"\\\"\" \"\\n\" \"eof");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match basic string
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match empty string
-            Assert.AreEqual(matcher.MatchNext(data).Value, "");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "");
             Assert.AreEqual(data.CurrentItem, "\"");
             // Ensure non-empty string contents
-            Assert.AreEqual(matcher.MatchNext(data).Value, "test");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "test");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match escape char
-            Assert.AreEqual(matcher.MatchNext(data).Value, "\\\"");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "\\\"");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Include but dont react to other escape chars
-            Assert.AreEqual(matcher.MatchNext(data).Value, "\\n");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "\\n");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Ensure discarding of string that reaches eof without closing quote
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "\"");
 
         }
@@ -228,33 +234,34 @@ namespace Tests
         {
             NameLiteralMatcher matcher = new NameLiteralMatcher();
             StringTokenizer data = new StringTokenizer("'A' 'name_0xA2' '' 'n\\ame' 'Bob bobson' '\"Bob\"' 'eof");
+            SourcePosition streamPos = new SourcePosition(0, 0, 0);
 
             // Match basic name
-            Assert.IsNotNull(matcher.MatchNext(data));
+            Assert.IsNotNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match name with underscore and digit
-            Assert.AreEqual(matcher.MatchNext(data).Value, "name_0xA2");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "name_0xA2");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Match empty name
-            Assert.AreEqual(matcher.MatchNext(data).Value, "");
+            Assert.AreEqual(matcher.MatchNext(data, ref streamPos).Value, "");
             Assert.AreEqual(data.CurrentItem, " ");
             data.Advance();
             // Fail escape char
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "'");
             data.Advance(8);
             // Fail whitespace
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "'");
             data.Advance(13);
             // Fail quotes
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "'");
             data.Advance(8);
             // Ensure discarding of name that reaches eof without closing single-quote
-            Assert.IsNull(matcher.MatchNext(data));
+            Assert.IsNull(matcher.MatchNext(data, ref streamPos));
             Assert.AreEqual(data.CurrentItem, "'");
         }
     }

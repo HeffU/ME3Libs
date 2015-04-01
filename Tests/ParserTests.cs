@@ -30,7 +30,29 @@ namespace Tests
                 "var private struct transient twoStruct extends testStruct\n" +
                 "{\n" +
                 "   var etestnumeration num;\n" +
-                "} structA, structB;\n";
+                "} structA, structB;\n" +
+                "private simulated function testStruct MyFunc( out int one, coerce optional float two ) \n" +
+                "{\n" +
+                "   herebedragons\n" +
+                "}\n" +
+                "auto state MyState\n" +
+                "{\n" +
+                "ignores MyFunc, dragon;\n" +
+                "function StateFunc()\n" +
+                "{\n" +
+                "}\n" +
+                "\n" +
+                "Begin:\n" +
+                "       moredragons\n" +
+                "}\n" +
+                "\n" +
+                "final static operator(254) int add( coerce float left, coerce float right )\n" +
+                "{\n" +
+                "   all the dragons\n" +
+                "}\n" +
+                "\n" +
+                "\n" +
+                "\n";
 
             var parser = new StringParser(new TokenStream<String>(new StringLexer(source)));
 

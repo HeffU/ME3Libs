@@ -17,7 +17,7 @@ namespace Tests
             var lexer = new StringLexer(source);
 
             // Match that the first token is a +
-            Assert.AreEqual(lexer.GetNextToken().Type, TokenType.Add);
+            Assert.AreEqual(lexer.GetNextToken().Type, TokenType.PlusSign);
             // Ensure that whitespace is returned
             Assert.AreEqual(lexer.GetNextToken().Type, TokenType.WhiteSpace);
             // Assert that an invalid token is found on a non-terminated string
@@ -94,7 +94,7 @@ namespace Tests
             Assert.AreEqual(enumerator.Current.Type, TokenType.LeftShift);
             enumerator.MoveNext();
             // Match another delimiter
-            Assert.AreEqual(enumerator.Current.Type, TokenType.LessThan);
+            Assert.AreEqual(enumerator.Current.Type, TokenType.LeftArrow);
             enumerator.MoveNext();
             // Match a string
             Assert.AreEqual(enumerator.Current.Value, "str");

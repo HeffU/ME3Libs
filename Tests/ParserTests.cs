@@ -46,7 +46,7 @@ namespace Tests
                 "       moredragons\n" +
                 "}\n" +
                 "\n" +
-                "final static operator(254) int add( coerce float left, coerce float right )\n" +
+                "final static operator(254) int >>>( coerce float left, coerce float right )\n" +
                 "{\n" +
                 "   all the dragons\n" +
                 "}\n" +

@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using ME3Script.Lexing.Tokenizing;
 using ME3Script.Language.Tree;
 using ME3Script.Utilities;
+using ME3Script.Analysis.Visitors;
+using ME3Script.Compiling.Errors;
+using ME3Script.Analysis.Symbols;
 
 namespace Tests
 {
@@ -16,7 +19,7 @@ namespace Tests
         public void BasicClassTest()
         {
             var source = 
-                "class Test extends Actor within Object Deprecated Transient; \n" +
+                "class Test Deprecated Transient; \n" +
                 "var enum ETestnumeration {\n" +
                 "     TEST_value1,\n" +
                 "     TEST_value2,\n" +
@@ -54,9 +57,23 @@ namespace Tests
                 "\n" +
                 "\n";
 
-            var parser = new StringParser(new TokenStream<String>(new StringLexer(source)));
+            var log = new MessageLog();
+            var parser = new StringParser(new TokenStream<String>(new StringLexer(source)), log);
+            var symbols = new SymbolTable();
+
+            Class obj = new Class("Object", null, null, null, null, null, null, null, null, null, null);
+            obj.OuterClass = obj;
+            symbols.PushScope(obj.Name);
+            symbols.AddSymbol(obj.Name, obj);
+
+            VariableType integer = new VariableType("int", null, null);
+            symbols.AddSymbol(integer.Name, integer);
+            VariableType floatingpoint = new VariableType("float", null, null);
+            symbols.AddSymbol(floatingpoint.Name, floatingpoint);
 
             Class node = (Class)parser.ParseDocument();
+            var ClassValidator = new ClassValidationVisitor(log, symbols);
+            node.AcceptVisitor(ClassValidator);
             return;
         }
     }

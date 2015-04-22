@@ -40,7 +40,7 @@ namespace Tests
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +
-                "ignores MyFunc, dragon;\n" +
+                "ignores MyFunc;\n" +
                 "function StateFunc()\n" +
                 "{\n" +
                 "}\n" +

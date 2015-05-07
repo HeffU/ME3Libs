@@ -58,7 +58,7 @@ namespace Tests
                 "\n";
 
             var log = new MessageLog();
-            var parser = new StringParser(new TokenStream<String>(new StringLexer(source)), log);
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
             var symbols = new SymbolTable();
 
             Class obj = new Class("Object", null, null, null, null, null, null, null, null, null, null);

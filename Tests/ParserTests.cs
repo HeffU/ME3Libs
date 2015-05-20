@@ -37,7 +37,7 @@ namespace Tests
                 "} structA, structB;\n" +
                 "private simulated function float MyFunc( out int one, coerce optional float two ) \n" +
                 "{\n" +
-                "   return two;\n" +
+                "   return two + 0.33 * 0.66 + 0.1 * 1.5;\n" +
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +
@@ -71,6 +71,14 @@ namespace Tests
             symbols.AddSymbol(integer.Name, integer);
             VariableType floatingpoint = new VariableType("float", null, null);
             symbols.AddSymbol(floatingpoint.Name, floatingpoint);
+
+            InOpDeclaration plus_float = new InOpDeclaration("+", 20, false, null, floatingpoint, new FunctionParameter(floatingpoint, null, null, null, null),
+                new FunctionParameter(floatingpoint, null, null, null, null), null, null, null);
+            symbols.AddOperator(plus_float);
+
+            InOpDeclaration mult_float = new InOpDeclaration("*", 16, false, null, floatingpoint, new FunctionParameter(floatingpoint, null, null, null, null),
+                new FunctionParameter(floatingpoint, null, null, null, null), null, null, null);
+            symbols.AddOperator(mult_float);
 
             Class node = (Class)parser.ParseDocument();
             var ClassValidator = new ClassValidationVisitor(log, symbols);

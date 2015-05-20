@@ -35,9 +35,9 @@ namespace Tests
                 "{\n" +
                 "   var etestnumeration num;\n" +
                 "} structA, structB;\n" +
-                "private simulated function testStruct MyFunc( out int one, coerce optional float two ) \n" +
+                "private simulated function float MyFunc( out int one, coerce optional float two ) \n" +
                 "{\n" +
-                "   herebedragons\n" +
+                "   return;\n" +
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +

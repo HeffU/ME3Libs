@@ -9,6 +9,7 @@ using ME3Script.Utilities;
 using ME3Script.Analysis.Visitors;
 using ME3Script.Compiling.Errors;
 using ME3Script.Analysis.Symbols;
+using ME3Script.Language.Util;
 
 namespace Tests
 {
@@ -74,6 +75,16 @@ namespace Tests
             Class node = (Class)parser.ParseDocument();
             var ClassValidator = new ClassValidationVisitor(log, symbols);
             node.AcceptVisitor(ClassValidator);
+
+            symbols.GoDirectlyToStack(node.GetInheritanceString());
+            foreach (Function f in node.Functions)
+            {
+                symbols.PushScope(f.Name);
+                var p = new CodeBodyParser(new TokenStream<String>(new StringLexer(source)), f.Body, symbols, f, log);
+                var b = p.ParseBody();
+                symbols.PopScope();
+            }
+
             return;
         }
     }

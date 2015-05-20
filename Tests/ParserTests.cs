@@ -37,7 +37,7 @@ namespace Tests
                 "} structA, structB;\n" +
                 "private simulated function float MyFunc( out int one, coerce optional float two ) \n" +
                 "{\n" +
-                "   return;\n" +
+                "   return two;\n" +
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +

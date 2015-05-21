@@ -30,14 +30,14 @@ namespace Tests
                 "VAR INT Y, Z; \n" +
                 "var ETestnumeration testnum;\n" +
                 "struct transient testStruct\n" +
-                "{ var int a, b, c; };\n" +
+                "{ var float a, b, c; };\n" +
                 "var private struct transient twoStruct extends testStruct\n" +
                 "{\n" +
                 "   var etestnumeration num;\n" +
                 "} structA, structB;\n" +
-                "private simulated function float MyFunc( out int one, coerce optional float two ) \n" +
+                "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +
                 "{\n" +
-                "   return two + 0.33 * 0.66 + 0.1 * 1.5;\n" +
+                "   return one.a + 0.33 * 0.66 + 0.1 * 1.5;\n" +
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +

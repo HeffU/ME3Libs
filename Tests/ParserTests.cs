@@ -35,9 +35,13 @@ namespace Tests
                 "{\n" +
                 "   var etestnumeration num;\n" +
                 "} structA, structB;\n" +
+                "function float funcB( testStruct one, float two ) \n" +
+                "{\n" +
+                "   return one.a + 0.33 * (0.66 + 0.1) * 1.5;\n" +
+                "}\n" +
                 "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +
                 "{\n" +
-                "   return one.a + 0.33 * 0.66 + 0.1 * 1.5;\n" +
+                "   return one.b + funcB(one, two);\n" +
                 "}\n" +
                 "auto state MyState\n" +
                 "{\n" +

@@ -285,6 +285,40 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestParseVarDecl()
+        {
+            var source =
+                "var private struct transient twoStruct extends testStruct\n" +
+                "{\n" +
+                "   var etestnumeration num;\n" +
+                "} structA, structB;";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var decl = parser.TryParseVarDecl();
+            Assert.IsNotNull(decl);
+            Assert.AreEqual(decl.Specifiers[0].Value.ToLower(), "private");
+            Assert.AreEqual(decl.VarType.Name.ToLower(), "twostruct");
+            Assert.AreEqual(decl.Variables[1].Name.ToLower(), "structb");
+
+            source = "var ;\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseVarDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected variable type or struct/enum type declaration!");
+
+            source = "var int ;\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseVarDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed variable names!");
+
+            source = "var int test\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseVarDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected semi-colon!");
+
+            return;
+        }
+
+        [TestMethod]
         public void BasicClassTest()
         {
             var source = 

@@ -45,6 +45,76 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestParseOpDecl()
+        {
+            var source =                 
+                "final static operator(254) int >>>( coerce float left, coerce float right )\n" +
+                "{\n" +
+                "   all the dragons\n" +
+                "}\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var decl = parser.TryParseOperatorDecl();
+            Assert.IsNotNull(decl);
+            Assert.AreEqual(decl.OperatorKeyword.ToLower(), ">>>");
+            Assert.AreEqual((decl as InOpDeclaration).Precedence, 254);
+            Assert.AreEqual(decl.ReturnType.Name.ToLower(), "int");
+            Assert.AreEqual((decl as InOpDeclaration).RightOperand.Name.ToLower(), "right");
+
+            source = "final static operator int \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '('! (Did you forget to specify operator precedence?)");
+
+            source = "final static operator(asd) int \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected an integer number!");
+
+            source = "final static operator(54 int \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected ')'!");
+
+            source = "final static operator(54) (\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected operator name or return type!");
+
+            source = "final static operator(254) int >>>\n {";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '('!");
+
+            source = "final static operator(254) int >>>( coerce left, coerce float right )\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed operand!");
+
+            source = "final static operator(254) int >>>( coerce float left coerce float right )\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Unexpected operand content!");
+
+            source = "final static operator(254) int >>>( coerce float left )\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "In-fix operators requires exactly 2 parameters!");
+
+            source = "final static preoperator int >>>( coerce float left, coerce float right )\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Post/Pre-fix operators requires exactly 1 parameter!");
+
+            source = "final static operator(254) int >>>( coerce float left, coerce float right )\n { asdasd";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseOperatorDecl());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed operator body!");
+
+            return;
+        }
+
+        [TestMethod]
         public void BasicClassTest()
         {
             var source = 

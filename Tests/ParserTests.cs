@@ -115,6 +115,60 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestParseState()
+        {
+            var source =
+                "auto state MyState\n" +
+                "{\n" +
+                "ignores MyFunc;\n" +
+                "function StateFunc()\n" +
+                "{\n" +
+                "}\n" +
+                "\n" +
+                "Begin:\n" +
+                "       moredragons\n" +
+                "}\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var state = parser.TryParseState();
+            Assert.IsNotNull(state);
+            Assert.AreEqual(state.Name.ToLower(), "mystate");
+            Assert.AreEqual(state.Specifiers[0].Value.ToLower(), "auto");
+            Assert.AreEqual(state.Ignores[0].Name.ToLower(), "myfunc");
+
+            source = "auto state { \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected state name!");
+
+            source = "auto state MyState ignores \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '{'!");
+
+            source = "auto state MyState { ignores ; \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed ignore statement!");
+
+            source = "auto state MyState { ignores one, ; \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed ignore statement!");
+
+            source = "auto state MyState { ignores one, two } \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected semi-colon!");
+
+            source = "auto state MyState {  \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseState());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '}'!");
+
+            return;
+        }
+        [TestMethod]
         public void BasicClassTest()
         {
             var source = 

@@ -215,6 +215,76 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestParseEnum()
+        {
+            var source =
+                "enum ETestnumeration {\n" +
+                "     TEST_value1,\n" +
+                "     TEST_value2,\n" +
+                "     TEST_value3,\n" +
+                "};\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var enumeration = parser.TryParseEnum();
+            Assert.IsNotNull(enumeration);
+            Assert.AreEqual(enumeration.Name.ToLower(), "etestnumeration");
+            Assert.AreEqual(enumeration.Values[1].Name.ToLower(), "test_value2");
+
+            source = "enum {\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseEnum());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected enumeration name!");
+
+            source = "enum test \n test_value1, \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseEnum());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '{'!");
+
+            source = "enum test {\n } \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseEnum());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected non-empty enumeration!");
+
+            source = "enum test {\n int value } \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseEnum());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed enumeration content!");
+
+            return;
+        }
+
+        [TestMethod]
+        public void TestParseStruct()
+        {
+            var source =
+                "struct transient testStruct\n" +
+                "{ var float a, b, c; };\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var s = parser.TryParseStruct();
+            Assert.IsNotNull(s);
+            Assert.AreEqual(s.Name.ToLower(), "teststruct");
+            Assert.AreEqual(s.Members[0].Variables[1].Name.ToLower(), "b");
+
+            source = "struct transient {\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseStruct());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected struct name!");
+
+            source = "struct transient testStruct \n var float a; }";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseStruct());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '{'!");
+
+            source = "struct transient testStruct { \n var a; }";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseStruct());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed struct content!");
+
+            return;
+        }
+
+        [TestMethod]
         public void BasicClassTest()
         {
             var source = 

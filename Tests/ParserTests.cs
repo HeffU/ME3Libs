@@ -168,6 +168,52 @@ namespace Tests
 
             return;
         }
+
+        [TestMethod]
+        public void TestParseFunction()
+        {
+            var source =
+                "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +
+                "{\n" +
+                "   return one.b + funcB(one, two);\n" +
+                "}\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var func = parser.TryParseFunction();
+            Assert.IsNotNull(func);
+            Assert.AreEqual(func.Name.ToLower(), "myfunc");
+            Assert.AreEqual(func.Specifiers[0].Value.ToLower(), "private");
+            Assert.AreEqual(func.Parameters[1].Name.ToLower(), "two");
+            Assert.AreEqual(func.ReturnType.Name.ToLower(), "float");
+
+            source = "private simulated function ( \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseFunction());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected function name or return type!");
+
+            source = "function int funcA ) \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseFunction());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected '('!");
+
+            source = "function int funcA ( out int, ) \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseFunction());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed parameter!");
+
+            source = "function int funcA ( out int one two ) \n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseFunction());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Unexpected parameter content!");
+
+            source = "function int funcA ( out int one, int two) \n {";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseFunction());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed function body!");
+
+            return;
+        }
+
         [TestMethod]
         public void BasicClassTest()
         {

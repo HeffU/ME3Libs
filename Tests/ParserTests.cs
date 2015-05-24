@@ -16,6 +16,34 @@ namespace Tests
     [TestClass]
     public class ParserTests
     {
+        MessageLog log = new MessageLog();
+
+        [TestMethod]
+        public void TestParseSpecifier()
+        {
+            var source = "coerce native";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            Assert.AreEqual(parser.TryParseSpecifier(GlobalLists.ParameterSpecifiers).Value.ToLower(), "coerce");
+            Assert.IsNull(parser.TryParseSpecifier(GlobalLists.ParameterSpecifiers));
+
+            return;
+        }
+
+        [TestMethod]
+        public void TestParseParameter()
+        {
+            var source = "coerce out int one float two[5] optional )";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            Assert.AreEqual(parser.TryParseParameter().Name.ToLower(), "one");
+            Assert.AreEqual(parser.TryParseParameter().IsStaticArray, true);
+            Assert.IsNull(parser.TryParseParameter());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected parameter type!");
+
+            return;
+        }
+
         [TestMethod]
         public void BasicClassTest()
         {
@@ -62,7 +90,6 @@ namespace Tests
                 "\n" +
                 "\n";
 
-            var log = new MessageLog();
             var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
             var symbols = new SymbolTable();
 

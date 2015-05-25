@@ -319,6 +319,83 @@ namespace Tests
         }
 
         [TestMethod]
+        public void TestParseClass()
+        {
+            var source =
+                "class Test Deprecated Transient; \n" +
+                "var private deprecated int X; \n" +
+                "struct transient testStruct\n" +
+                "{ var float a, b, c; };\n" +
+                "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +
+                "{\n" +
+                "   return one.b + funcB(one, two);\n" +
+                "}\n" +
+                "auto state MyState\n" +
+                "{\n" +
+                "ignores MyFunc;\n" +
+                "function StateFunc()\n" +
+                "{\n" +
+                "}\n" +
+                "Begin:\n" +
+                "       moredragons\n" +
+                "}\n" +
+                "final static operator(254) int >>>( coerce float left, coerce float right )\n" +
+                "{\n" +
+                "   all the dragons\n" +
+                "}\n" +
+                "\n";
+            var parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+
+            var decl = parser.TryParseClass();
+            Assert.IsNotNull(decl);
+            Assert.AreEqual(decl.Name.ToLower(), "test");
+            Assert.AreEqual(decl.Specifiers[1].Value.ToLower(), "transient");
+            Assert.AreEqual(decl.VariableDeclarations[0].Variables[0].Name.ToLower(), "x");
+            Assert.AreEqual(decl.TypeDeclarations[0].Name.ToLower(), "teststruct");
+            Assert.AreEqual(decl.Functions[0].Name.ToLower(), "myfunc");
+            Assert.AreEqual(decl.States[0].Name.ToLower(), "mystate");
+            Assert.AreEqual(decl.Operators[0].OperatorKeyword.ToLower(), ">>>");
+            Assert.AreEqual(log.Messages[log.Messages.Count - 1].Message.Substring(0, 10), "No parent ");
+
+            source = "test ;\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected class declaration!");
+
+            source = "class ;\n";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected class name!");
+
+            source = "class Test deprecated\n var int local;";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected semi-colon!");
+
+            source = "class Test deprecated; \n var int ;";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed instance variable!");
+
+            source = "class Test deprecated; \n struct fail;";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Malformed type declaration!");
+
+            source = "class Test deprecated; \n struct fail { var int one; } struct next;";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected semi-colon!");
+
+            source = "class Test deprecated; \n struct fail { var int one; }; function myfunc() {} var int fail;";
+            parser = new ClassOutlineParser(new TokenStream<String>(new StringLexer(source)), log);
+            Assert.IsNull(parser.TryParseClass());
+            Assert.AreEqual(log.AllErrors[log.AllErrors.Count - 1].Message, "Expected function/state/operator declaration!");
+
+            return;
+        }
+
+        [TestMethod]
         public void BasicClassTest()
         {
             var source = 

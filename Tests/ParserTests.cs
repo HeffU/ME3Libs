@@ -420,7 +420,7 @@ namespace Tests
                 "   one.a = 1.3 * c;" +
                 "   while (true)" +
                 "   {" +
-                "       c = c + c;" +
+                "       c = c - c - c;" +
                 "   }" +
                 "   return one.a + 0.33 * (0.66 + 0.1) * 1.5;\n" +
                 "}\n" +
@@ -464,6 +464,10 @@ namespace Tests
                 new FunctionParameter(floatingpoint, null, null, null, null), null, null, null);
             symbols.AddOperator(plus_float);
 
+            InOpDeclaration sub_float = new InOpDeclaration("-", 20, false, null, floatingpoint, new FunctionParameter(floatingpoint, null, null, null, null),
+                new FunctionParameter(floatingpoint, null, null, null, null), null, null, null);
+            symbols.AddOperator(sub_float);
+
             InOpDeclaration mult_float = new InOpDeclaration("*", 16, false, null, floatingpoint, new FunctionParameter(floatingpoint, null, null, null, null),
                 new FunctionParameter(floatingpoint, null, null, null, null), null, null, null);
             symbols.AddOperator(mult_float);
@@ -471,10 +475,6 @@ namespace Tests
             Class node = (Class)parser.ParseDocument();
             var ClassValidator = new ClassValidationVisitor(log, symbols);
             node.AcceptVisitor(ClassValidator);
-
-            var CodeBuilder = new CodeBuilderVisitor();
-            node.AcceptVisitor(CodeBuilder);
-            Console.Write(CodeBuilder.GetCodeString());
 
             symbols.GoDirectlyToStack(node.GetInheritanceString());
             foreach (Function f in node.Functions)
@@ -484,6 +484,10 @@ namespace Tests
                 var b = p.ParseBody();
                 symbols.PopScope();
             }
+
+            var CodeBuilder = new CodeBuilderVisitor();
+            node.AcceptVisitor(CodeBuilder);
+            Console.Write(CodeBuilder.GetCodeString());
 
             return;
         }

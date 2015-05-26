@@ -416,6 +416,12 @@ namespace Tests
                 "} structA, structB;\n" +
                 "function float funcB( testStruct one, float two ) \n" +
                 "{\n" +
+                "   local float c;" +
+                "   one.a = 1.3 * c;" +
+                "   while (true)" +
+                "   {" +
+                "       c = c + c;" +
+                "   }" +
                 "   return one.a + 0.33 * (0.66 + 0.1) * 1.5;\n" +
                 "}\n" +
                 "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +
@@ -465,6 +471,10 @@ namespace Tests
             Class node = (Class)parser.ParseDocument();
             var ClassValidator = new ClassValidationVisitor(log, symbols);
             node.AcceptVisitor(ClassValidator);
+
+            var CodeBuilder = new CodeBuilderVisitor();
+            node.AcceptVisitor(CodeBuilder);
+            Console.Write(CodeBuilder.GetCodeString());
 
             symbols.GoDirectlyToStack(node.GetInheritanceString());
             foreach (Function f in node.Functions)

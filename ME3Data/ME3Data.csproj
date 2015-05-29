@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\DataStructs.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Class.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3DefaultProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Field.cs" />
@@ -47,9 +48,12 @@
     <Compile Include="DataTypes\ScriptTypes\ME3Property.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3State.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Struct.cs" />
+    <Compile Include="FileFormats\PCC\ExportTableEntry.cs" />
+    <Compile Include="FileFormats\PCC\ImportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\PCCFile.cs" />
     <Compile Include="FileFormats\PCC\ObjectTableEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\ObjectReader.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ME3Data.FileFormats.PCC;
+using ME3Data.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +15,20 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         protected int _SuperIndex;
         protected int _NextIndex;
+
+        public ME3Field(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
+            : base(data, exp, pcc)
+        {
+        }
+
+        public bool Deserialize()
+        {
+            base.Deserialize();
+
+            _SuperIndex = Data.ReadIndex();
+            _NextIndex = Data.ReadIndex();
+
+            return true;
+        }
     }
 }

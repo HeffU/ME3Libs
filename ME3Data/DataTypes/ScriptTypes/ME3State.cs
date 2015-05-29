@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ME3Data.FileFormats.PCC;
+using ME3Data.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +19,40 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public Int32 FunctionMapCount;
         public List<ME3Function> FunctionMap;
+
+        private Int32 _unknown;
+
+        private List<FunctionMapEntry> _FunctionMap;
+
+        public ME3State(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
+            : base(data, exp, pcc)
+        {
+            _FunctionMap = new List<FunctionMapEntry>();
+        }
+
+        public bool Deserialize()
+        {
+            base.Deserialize();
+
+            _unknown = Data.ReadInt32();
+
+            ProbeMask = Data.ReadInt32();
+            IgnoreMask = Data.ReadInt64();
+
+            LabelTableOffset = Data.ReadInt16();
+            StateFlags = Data.ReadInt32();
+
+            FunctionMapCount = Data.ReadInt32();
+            for (int i = 0; i < FunctionMapCount; i++)
+            {
+                var funcEntry = new FunctionMapEntry();
+                funcEntry.NameRef.Index = Data.ReadInt32();
+                funcEntry.NameRef.ModNumber = Data.ReadInt32();
+                funcEntry.ObjectIndex = Data.ReadInt32();
+                _FunctionMap.Add(funcEntry);
+            }
+
+            return true;
+        }
     }
 }

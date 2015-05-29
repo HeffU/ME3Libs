@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ME3Data.FileFormats.PCC;
+using ME3Data.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +18,26 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         // Network
         public UInt16 ReplicateOffset;
+
+        public ME3Property(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
+            : base(data, exp, pcc)
+        {
+
+        }
+
+        public bool Deserialize()
+        {
+            base.Deserialize();
+
+            var ArrayInfo = Data.ReadInt32();
+            ArraySize = (UInt16)(ArrayInfo & 0x0000FFFFU);
+            ArrayElementSize = (UInt16)(ArrayInfo >> 16);
+
+            PropertyFlags = Data.ReadUInt64();
+            if (false) // Has .Net flag
+                ReplicateOffset = Data.ReadUInt16();
+
+            return true;
+        }
     }
 }

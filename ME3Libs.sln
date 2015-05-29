@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 		{99D2B129-E7B1-4F4D-8554-D6514A29925B} = {99D2B129-E7B1-4F4D-8554-D6514A29925B}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Data", "ME3Data\ME3Data.csproj", "{13113AF5-8D67-4660-9C16-D2AD5A3DB5C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{2D0124FA-FF01-44B5-9119-9ECBCED10A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D0124FA-FF01-44B5-9119-9ECBCED10A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D0124FA-FF01-44B5-9119-9ECBCED10A61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13113AF5-8D67-4660-9C16-D2AD5A3DB5C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13113AF5-8D67-4660-9C16-D2AD5A3DB5C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13113AF5-8D67-4660-9C16-D2AD5A3DB5C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13113AF5-8D67-4660-9C16-D2AD5A3DB5C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

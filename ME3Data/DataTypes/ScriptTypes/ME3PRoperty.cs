@@ -12,7 +12,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public UInt16 ArraySize;
         public UInt16 ArrayElementSize;
 
-        public UInt64 Flags;
+        public UInt64 PropertyFlags;
 
         // Network
         public UInt16 ReplicateOffset;

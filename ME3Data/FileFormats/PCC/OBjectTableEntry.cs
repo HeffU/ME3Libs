@@ -1,4 +1,6 @@
-﻿using ME3Data.DataTypes.ScriptTypes;
+﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,7 @@ namespace ME3Data.FileFormats.PCC
 
         /// <summary>
         /// The name of this object's outer object.
+        /// Only valid if object is an export or the import's PCC file has been loaded beforehand.
         /// </summary>
         public String OuterName;
 
@@ -48,6 +51,12 @@ namespace ME3Data.FileFormats.PCC
         public ME3Object OuterObject;
 
 
+        protected ObjectReader Data;
 
+        public ObjectTableEntry(PCCFile current, ObjectReader data)
+        {
+            CurrentPCC = current;
+            Data = data;
+        }
     }
 }

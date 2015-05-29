@@ -1,4 +1,6 @@
-﻿using ME3Data.DataTypes.ScriptTypes;
+﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +20,33 @@ namespace ME3Data.FileFormats.PCC
         /// The flags of this export object.
         /// </summary>
         public UInt64 ObjectFlags;
+
+
+        private Int32 _ClassIndex;
+        private Int32 _SuperIndex;
+        private Int32 _OuterIntex;
+        private NameReference _ObjectNameRef;
+        private Int32 _ArchetypeIndex;
+
+        public ExportTableEntry(PCCFile current, ObjectReader data)
+            :base(current, data)
+        {
+
+        }
+
+        public bool Deserialize()
+        {
+
+            // TODO: Handle dependencies
+            // 2nd pass after this to resolve names etc?
+            _ClassIndex = Data.ReadInt32();
+            _SuperIndex = Data.ReadInt32();
+            _OuterIntex = Data.ReadInt32();
+            _ObjectNameRef = Data.ReadNameRef();
+            _ArchetypeIndex = Data.ReadInt32();
+            ObjectFlags = Data.ReadUInt64();
+
+            return true;
+        }
     }
 }

@@ -46,6 +46,7 @@
     <Compile Include="DataTypes\ScriptTypes\ME3Function.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Object.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Property.cs" />
+    <Compile Include="DataTypes\ScriptTypes\ME3ScriptStruct.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3State.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Struct.cs" />
     <Compile Include="FileFormats\PCC\ExportTableEntry.cs" />

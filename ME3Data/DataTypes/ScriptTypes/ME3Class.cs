@@ -71,8 +71,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             for (int i = 0; i < ComponentCount; i++)
             {
                 var componentRef = new ComponentMapEntry();
-                componentRef.NameRef.Index = Data.ReadInt32();
-                componentRef.NameRef.ModNumber = Data.ReadInt32();
+                componentRef.NameRef = Data.ReadNameRef();
                 componentRef.ObjectIndex = Data.ReadInt32();
                 _Components.Add(componentRef);
             }

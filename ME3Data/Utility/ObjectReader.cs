@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ME3Data.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace ME3Data.Utility
 
         public byte[] ReadRawData(int numBytes)
         {
-            if (_currentPosition + numBytes >= _size || numBytes <= 0)
+            if (_currentPosition + numBytes > _size || numBytes <= 0)
                 return null;
 
             byte[] raw = new byte[numBytes];
@@ -40,39 +41,55 @@ namespace ME3Data.Utility
             return raw;
         }
 
+        public byte ReadByte()
+        {
+            return _currentPosition + 1 > _size ? (byte)0 : _data[_position(1)];
+        }
+
         public Int32 ReadIndex()
         {
-            return _currentPosition >= _size ? 0 : BitConverter.ToInt32(_data, _position(4));
+            return _currentPosition + 4 > _size ? 0 : BitConverter.ToInt32(_data, _position(4));
         }
 
         public Int32 ReadInt32()
         {
-            return _currentPosition >= _size ? 0 : BitConverter.ToInt32(_data, _position(4));
+            return _currentPosition + 4 > _size ? 0 : BitConverter.ToInt32(_data, _position(4));
         }
 
         public Int16 ReadInt16()
         {
-            return _currentPosition >= _size ? (Int16)0 : BitConverter.ToInt16(_data, _position(2));
+            return _currentPosition + 2 > _size ? (Int16)0 : BitConverter.ToInt16(_data, _position(2));
         }
 
         public Int64 ReadInt64()
         {
-            return _currentPosition >= _size ? 0 : BitConverter.ToInt64(_data, _position(8));
+            return _currentPosition + 8 > _size ? 0 : BitConverter.ToInt64(_data, _position(8));
         }
 
         public UInt32 ReadUInt32()
         {
-            return _currentPosition >= _size ? 0 : BitConverter.ToUInt32(_data, _position(4));
+            return _currentPosition + 4 > _size ? 0 : BitConverter.ToUInt32(_data, _position(4));
         }
 
         public UInt16 ReadUInt16()
         {
-            return _currentPosition >= _size ? (UInt16)0 : BitConverter.ToUInt16(_data, _position(2));
+            return _currentPosition + 2 > _size ? (UInt16)0 : BitConverter.ToUInt16(_data, _position(2));
         }
 
         public UInt64 ReadUInt64()
         {
-            return _currentPosition >= _size ? 0 : BitConverter.ToUInt64(_data, _position(8));
+            return _currentPosition + 8 > _size ? 0 : BitConverter.ToUInt64(_data, _position(8));
+        }
+
+        public NameReference ReadNameRef()
+        {
+            if (_currentPosition + 8 > _size)
+                return new NameReference();
+            var NameRef = new NameReference();
+            NameRef.Index = BitConverter.ToInt32(_data, _position(4));
+            NameRef.ModNumber = BitConverter.ToInt32(_data, _position(4));
+
+            return NameRef;
         }
     }
 }

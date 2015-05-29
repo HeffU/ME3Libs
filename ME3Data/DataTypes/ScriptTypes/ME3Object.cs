@@ -43,14 +43,13 @@ namespace ME3Data.DataTypes.ScriptTypes
         public bool DeserializeDefaultProperties()
         {
             DefaultProperties = new List<ME3DefaultProperty>();
-            var current = new ME3DefaultProperty();
+            var current = new ME3DefaultProperty(Data, PCC);
 
-            /*
             while (current.Deserialize())
             {
                 DefaultProperties.Add(current);
-                current = new ME3DefaultProperty();
-            } */
+                current = new ME3DefaultProperty(Data, PCC);
+            }
 
             return true;
         }

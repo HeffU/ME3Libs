@@ -46,7 +46,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             /*
             if (String.Equals(PCC.Names[NameRef.Index], "None", StringComparison.OrdinalIgnoreCase))
-                return true; */
+                return false; */
 
             TypeNameRef = Data.ReadNameRef();
 

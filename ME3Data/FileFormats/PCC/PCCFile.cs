@@ -13,17 +13,17 @@ namespace ME3Data.FileFormats.PCC
         /// <summary>
         /// List of all Export objects in this PCC.
         /// </summary>
-        public List<ExportTableEntry> Exports { public get; private set; }
+        public List<ExportTableEntry> Exports { get; private set; }
 
         /// <summary>
         /// List of all Import objects in this PCC.
         /// </summary>
-        public List<ImportTableEntry> Imports { public get; private set; }
+        public List<ImportTableEntry> Imports { get; private set; }
 
         /// <summary>
         /// List of all names in this PCC.
         /// </summary>
-        public List<String> Names { public get; private set; }
+        public List<String> Names { get; private set; }
 
 
         private ObjectReader Data;

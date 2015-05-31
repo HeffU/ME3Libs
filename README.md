@@ -1,11 +1,15 @@
 # ME3Libs
 A collection of .NET libraries to interact with the game Mass Effect 3.
 This is intended to add support for modifying the game, as the original developers did not add any tools for that purpose.
-All of the contained projects were created as learning exercises, and as such promise no quality and are sometimes heavily inspired from other publicly available works.
+All of the contained projects were created as learning exercises, and as such promise no quality and are partly inspired by other publicly available works.
 
 # ME3Script
 WIP
 Library to handle interaction with the ME3 versions of UnrealScript, intended to both decompile and compile scripts.
+
+# ME3Data
+WIP
+Library to handle file formats associated with ME3 as well as manipulation of the various data used by the game.
 
 # Credits
 - ME3Explorer, all involved! (see http://me3explorer.wikia.com/wiki/About_Us)

@@ -41,7 +41,9 @@
   <ItemGroup>
     <Compile Include="DataTypes\DataStructs.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Class.cs" />
+    <Compile Include="DataTypes\ScriptTypes\ME3Const.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3DefaultProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\ME3Enum.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Field.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Function.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Object.cs" />

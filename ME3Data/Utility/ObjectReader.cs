@@ -91,5 +91,29 @@ namespace ME3Data.Utility
 
             return NameRef;
         }
+
+        public String ReadString()
+        {
+            var size = ReadIndex();
+            bool unicode = false;
+            if (size < 0)
+            {
+                size = -size;
+                unicode = true;
+            }
+
+            if (unicode)
+            {
+                var bytes = ReadRawData((size * 2) - 2);
+                _position(2); // '\0'
+                return Encoding.Unicode.GetString(bytes);
+            }
+            else
+            {
+                var bytes = ReadRawData(size - 1);
+                _position(1); // '\0'
+                return Encoding.ASCII.GetString(bytes);
+            }
+        }
     }
 }

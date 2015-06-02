@@ -21,6 +21,16 @@ namespace ME3Data.FileFormats.PCC
         /// </summary>
         public UInt64 ObjectFlags;
 
+        /// <summary>
+        /// Size of the object in bytes
+        /// </summary>
+        public UInt32 Size;
+
+        /// <summary>
+        /// Offset for the object relative to the start of the PCCFile
+        /// </summary>
+        public UInt32 FileOffset;
+
 
         private Int32 _ClassIndex;
         private Int32 _SuperIndex;

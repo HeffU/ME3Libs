@@ -57,6 +57,7 @@
     <Compile Include="FileFormats\PCC\ObjectTableEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ObjectReader.cs" />
+    <Compile Include="Utility\PCCStreamReader.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

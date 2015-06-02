@@ -55,8 +55,13 @@
     <Compile Include="MatcherTests.cs" />
     <Compile Include="TokenizerTests.cs" />
     <Compile Include="ParserTests.cs" />
+    <Compile Include="PCCTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ME3Data\ME3Data.csproj">
+      <Project>{13113af5-8d67-4660-9c16-d2ad5a3db5c8}</Project>
+      <Name>ME3Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ME3Script\ME3Script.csproj">
       <Project>{99d2b129-e7b1-4f4d-8554-d6514a29925b}</Project>
       <Name>ME3Script</Name>

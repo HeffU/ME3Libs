@@ -12,6 +12,14 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public Int32 FirstChildIndex;
 
+        // Members
+        public List<ME3Object> Members;
+        // By type:
+        public List<ME3Struct> Structs;
+        public List<ME3Enum> Enums;
+        public List<ME3Property> Variables;
+        public List<ME3Const> Constants;
+
         // Script-related
         public Int32 ByteScriptSize;
         public Int32 DataScriptSize;
@@ -33,6 +41,11 @@ namespace ME3Data.DataTypes.ScriptTypes
             DataScript = Data.ReadRawData(DataScriptSize);
 
             return true;
+        }
+
+        public void LinkMembers()
+        {
+
         }
     }
 }

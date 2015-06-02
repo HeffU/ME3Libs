@@ -44,15 +44,16 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             NameRef = Data.ReadNameRef();
 
-            /*
-            if (String.Equals(PCC.Names[NameRef.Index], "None", StringComparison.OrdinalIgnoreCase))
-                return false; */
+            
+            if (String.Equals(PCC.GetName(NameRef), "None", StringComparison.OrdinalIgnoreCase))
+                return false; 
 
             TypeNameRef = Data.ReadNameRef();
 
             Size = Data.ReadUInt32();
             ArrayIndex = Data.ReadUInt32();
 
+            // Todo: read data depending on type.
             var skip = Data.ReadRawData((int)Size);
 
             return true;

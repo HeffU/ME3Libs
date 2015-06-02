@@ -16,10 +16,12 @@ namespace ME3Data.DataTypes.ScriptTypes
         // Default properties for anything except 'Class' types
         public List<ME3DefaultProperty> DefaultProperties;
 
+        public String Name { get { return ExportEntry.ObjectName; } }
+
+        public ExportTableEntry ExportEntry;
+
         protected PCCFile PCC;
         protected ObjectReader Data;
-
-        protected ExportTableEntry ExportEntry;
 
         public ME3Object(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
         {
@@ -32,7 +34,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             NetIndex = Data.ReadIndex();
 
-            if (false) // ExportEntry.ClassName != "Class"
+            if (!String.Equals(ExportEntry.ClassName, "Class", StringComparison.OrdinalIgnoreCase))
             {
                 return DeserializeDefaultProperties();
             }

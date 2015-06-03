@@ -23,24 +23,195 @@ namespace ME3Data.DataTypes.ScriptTypes
         ArrayProperty
     }
 
+    public abstract class DefaultPropertyValue
+    {
+        public ObjectReader Data;
+        public PCCFile PCC;
+        public UInt32 Size;
+
+        public DefaultPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+        {
+            Data = data;
+            PCC = pcc;
+            Size = size;
+        }
+
+        public abstract bool Deserialize();
+    }
+
+    public class BoolPropertyValue : DefaultPropertyValue
+    {
+        public bool Value;
+
+        public BoolPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadByte() > 0;
+            return true;
+        }
+    }
+
+    public class BytePropertyValue : DefaultPropertyValue
+    {
+        public String EnumName;
+        public String EnumValue;
+
+        public BytePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            EnumName = PCC.GetName(Data.ReadNameRef());
+            EnumValue = PCC.GetName(Data.ReadNameRef());
+            return true;
+        }
+    }
+
+    public class IntPropertyValue : DefaultPropertyValue
+    {
+        public Int32 Value;
+
+        public IntPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadInt32();
+            return true;
+        }
+    }
+
+    public class FloatPropertyValue : DefaultPropertyValue
+    {
+        public float Value;
+
+        public FloatPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadFloat();
+            return true;
+        }
+    }
+
+    public class StrPropertyValue : DefaultPropertyValue
+    {
+        public String Value;
+
+        public StrPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadString();
+            return true;
+        }
+    }
+
+    public class StringRefPropertyValue : DefaultPropertyValue
+    {
+        // TODO
+        public byte[] Value;
+
+        public StringRefPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadRawData((int)Size);
+            return true;
+        }
+    }
+
+    public class NamePropertyValue : DefaultPropertyValue
+    {
+        public String Name;
+
+        public NamePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Name = PCC.GetName(Data.ReadNameRef());
+            return true;
+        }
+    }
+
+    public class ObjectPropertyValue : DefaultPropertyValue
+    {
+        public ME3Object Object { get { return PCC.GetObject(Index); } }
+        public Int32 Index;
+
+        public ObjectPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Index = Data.ReadIndex();
+            return true;
+        }
+    }
+
+    public class DelegatePropertyValue : DefaultPropertyValue
+    {
+        // TODO
+        public byte[] Value;
+
+        public DelegatePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadRawData((int)Size);
+            return true;
+        }
+    }
+
+    public class StructPropertyValue : DefaultPropertyValue
+    {
+        // TODO
+        public String StructName;
+        public byte[] Value;
+
+        public StructPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            StructName = PCC.GetName(Data.ReadNameRef());
+            Value = Data.ReadRawData((int)Size - 8);
+            return true;
+        }
+    }
+
+    public class ArrayPropertyValue : DefaultPropertyValue
+    {
+        // TODO
+        public byte[] Value;
+
+        public ArrayPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
+            : base(data, pcc, size) { }
+
+        public override bool Deserialize()
+        {
+            Value = Data.ReadRawData((int)Size);
+            return true;
+        }
+    }
+
     public class ME3DefaultProperty
     {
         public String Name;
         public String TypeName;
         public PropertyType Type;
 
-        // Common data
         public UInt32 Size;
         public UInt32 ArrayIndex;
 
-        // Struct only
-        public String MemberName;
-
-        // Enum instance
-        public String EnumName;
-
-        // Bool only
-        public Boolean BoolValue;
+        public DefaultPropertyValue Value;
 
         //---
 
@@ -90,8 +261,64 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             ArrayIndex = Data.ReadUInt32();
 
-            // Todo: read data depending on type.
-            var skip = Data.ReadRawData((int)Size);
+            switch (Type) // Adjust size for certain types:
+            {
+                case PropertyType.BoolProperty:
+                    Value = new BoolPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.ByteProperty:
+                    Value = new BytePropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.IntProperty:
+                    Value = new IntPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.FloatProperty:
+                    Value = new FloatPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.StrProperty:
+                    Value = new StrPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.StringRefProperty:
+                    Value = new StringRefPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.NameProperty:
+                    Value = new NamePropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.ObjectProperty:
+                    Value = new ObjectPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.DelegateProperty:
+                    Value = new DelegatePropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.StructProperty:
+                    Value = new StructPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+                case PropertyType.ArrayProperty:
+                    Value = new ArrayPropertyValue(Data, PCC, Size);
+                    if (!Value.Deserialize())
+                        return false;
+                    break;
+            }
 
             return true;
         }

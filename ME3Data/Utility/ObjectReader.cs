@@ -81,6 +81,11 @@ namespace ME3Data.Utility
             return _currentPosition + 8 > _size ? 0 : BitConverter.ToUInt64(_data, _position(8));
         }
 
+        public float ReadFloat()
+        {
+            return _currentPosition + 4 > _size ? 0 : BitConverter.ToSingle(_data, _position(4));
+        }
+
         public NameReference ReadNameRef()
         {
             if (_currentPosition + 8 > _size)

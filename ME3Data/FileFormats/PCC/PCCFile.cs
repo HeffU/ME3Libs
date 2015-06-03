@@ -105,6 +105,14 @@ namespace ME3Data.FileFormats.PCC
             return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : String.Empty;
         }
 
+        public ME3Object GetObject(Int32 objIndex)
+        {
+            if (objIndex <= 0)
+                return null;
+            else
+                return Exports[objIndex - 1].Object;
+        }
+
         public String GetClassName(int objIndex)
         {
             if (objIndex < 0)

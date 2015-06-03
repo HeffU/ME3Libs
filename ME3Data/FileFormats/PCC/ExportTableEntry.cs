@@ -31,6 +31,16 @@ namespace ME3Data.FileFormats.PCC
         /// </summary>
         public UInt32 FileOffset;
 
+        /// <summary>
+        /// Flags for this export entry.
+        /// </summary>
+        public UInt32 ExportFlags;
+
+        /// <summary>
+        /// Size of an export table entry.
+        /// </summary>
+        public static UInt32 SizeInBytes = 68;
+
 
         private Int32 _ClassIndex;
         private Int32 _SuperIndex;
@@ -53,8 +63,18 @@ namespace ME3Data.FileFormats.PCC
             _SuperIndex = Data.ReadInt32();
             _OuterIntex = Data.ReadInt32();
             _ObjectNameRef = Data.ReadNameRef();
+            ObjectName = CurrentPCC.GetName(_ObjectNameRef);
             _ArchetypeIndex = Data.ReadInt32();
             ObjectFlags = Data.ReadUInt64();
+
+            Size = Data.ReadUInt32();
+            FileOffset = Data.ReadUInt32();
+            ExportFlags = Data.ReadUInt32();
+
+            // All of these seem unused in ME3
+            Data.ReadRawData(4); // Skip netObjectCount
+            Data.ReadRawData(16); // Skip package GUID's
+            Data.ReadRawData(4); // Skip package flags
 
             return true;
         }

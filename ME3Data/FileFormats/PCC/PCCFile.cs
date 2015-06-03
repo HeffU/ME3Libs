@@ -71,11 +71,14 @@ namespace ME3Data.FileFormats.PCC
             if (!DeserializeHeader(header))
                 return false;
 
-            // Unsure if export table is always after name table, make a more dynamic solution.
-            if (!DeserializeNames(Data.GetReader(_nameOffset, _exportOffset - _nameOffset)))
+            // Unsure if import table is always after name table, make a more dynamic solution.
+            if (!DeserializeNames(Data.GetReader(_nameOffset, _importOffset - _nameOffset)))
                 return false;
 
             if (!DeserializeImports())
+                return false;
+
+            if (!DeserializeExports())
                 return false;
 
             return true;
@@ -171,6 +174,23 @@ namespace ME3Data.FileFormats.PCC
                     return false;
 
                 Imports.Add(import);
+            }
+
+            return true;
+        }
+
+        private bool DeserializeExports()
+        {
+            for (int n = 0; n < _exportCount; n++)
+            {
+                var export = new ExportTableEntry(this,
+                    Data.GetReader(_exportOffset + (UInt32)(n * ExportTableEntry.SizeInBytes),
+                    ExportTableEntry.SizeInBytes));
+
+                if (!export.Deserialize())
+                    return false;
+
+                Exports.Add(export);
             }
 
             return true;

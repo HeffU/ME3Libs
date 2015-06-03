@@ -11,19 +11,16 @@ namespace ME3Data.Utility
     public class PCCStreamReader
     {
         private FileStream File;
-        private int currentPosition;
 
         public PCCStreamReader(FileStream file)
         {
             File = file;
-            currentPosition = 0;
         }
 
         private void Seek(int destination)
         {
-            int seekOffset = destination >= currentPosition ? destination - currentPosition : destination;
+            int seekOffset = destination >= (int)File.Position ? destination - (int)File.Position : destination;
             File.Seek(seekOffset, seekOffset != destination ? SeekOrigin.Current : SeekOrigin.Begin);
-            currentPosition = destination;
         }
 
         public ObjectReader GetReader(int startOffset, int size)

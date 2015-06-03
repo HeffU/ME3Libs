@@ -87,7 +87,7 @@ namespace ME3Data.Utility
                 return new NameReference();
             var NameRef = new NameReference();
             NameRef.Index = BitConverter.ToInt32(_data, _position(4));
-            NameRef.ModNumber = BitConverter.ToInt32(_data, _position(4));
+            NameRef.ModNumber = BitConverter.ToInt32(_data, _position(4)) - 1;
 
             return NameRef;
         }

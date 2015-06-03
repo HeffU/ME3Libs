@@ -32,6 +32,10 @@ namespace ME3Data.FileFormats.PCC
         /// </summary>
         public bool FullyLoaded;
 
+        /// <summary>
+        /// Size of an import table entry.
+        /// </summary>
+        public static UInt32 SizeInBytes = 28;
 
         private NameReference _PCCNameRef;
         private NameReference _ClassNameRef;

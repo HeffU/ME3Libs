@@ -26,7 +26,7 @@ namespace ME3Data.FileFormats.PCC
         public List<String> Names { get; private set; }
 
 
-        private PCCStreamReader Data;
+        public PCCStreamReader Data;
 
         private UInt32 _unkn1;
         private String _folderName;
@@ -75,6 +75,9 @@ namespace ME3Data.FileFormats.PCC
             if (!DeserializeNames(Data.GetReader(_nameOffset, _exportOffset - _nameOffset)))
                 return false;
 
+            if (!DeserializeImports())
+                return false;
+
             return true;
         }
 
@@ -86,6 +89,8 @@ namespace ME3Data.FileFormats.PCC
 
         public String GetName(NameReference reference)
         {
+            if (reference.Index == 0 && reference.ModNumber >= 0)
+                return String.Empty; // Error, weird mod number!
             return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : null;
         }
 
@@ -151,6 +156,23 @@ namespace ME3Data.FileFormats.PCC
                 // TODO: Add some sanity checking
                 Names.Add(name);
             }
+            return true;
+        }
+
+        private bool DeserializeImports()
+        {
+            for (int n = 0; n < _importCount; n++)
+            {
+                var import = new ImportTableEntry(this, 
+                    Data.GetReader(_importOffset + (UInt32)(n * ImportTableEntry.SizeInBytes), 
+                    ImportTableEntry.SizeInBytes));
+
+                if (!import.Deserialize())
+                    return false;
+
+                Imports.Add(import);
+            }
+
             return true;
         }
     }

@@ -36,7 +36,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             if (!String.Equals(ExportEntry.ClassName, "Class", StringComparison.OrdinalIgnoreCase))
             {
-                return DeserializeDefaultProperties();
+                //return DeserializeDefaultProperties();
             }
 
             return true;

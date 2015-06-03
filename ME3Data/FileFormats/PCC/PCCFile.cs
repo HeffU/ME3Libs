@@ -1,4 +1,5 @@
 ﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.ScriptTypes;
 using ME3Data.Utility;
 using System;
 using System.Collections.Generic;
@@ -80,6 +81,13 @@ namespace ME3Data.FileFormats.PCC
 
             if (!DeserializeExports())
                 return false;
+
+            foreach (ExportTableEntry export in Exports)
+            {
+                export.Object = new ME3Object(Data.GetReader(export.FileOffset, export.Size), export, this);
+                if (!export.Object.Deserialize())
+                    return false;
+            }
 
             return true;
         }
@@ -181,15 +189,18 @@ namespace ME3Data.FileFormats.PCC
 
         private bool DeserializeExports()
         {
+            uint pos = 0;
             for (int n = 0; n < _exportCount; n++)
             {
                 var export = new ExportTableEntry(this,
-                    Data.GetReader(_exportOffset + (UInt32)(n * ExportTableEntry.SizeInBytes),
+                    Data.GetReader(_exportOffset + pos,
                     ExportTableEntry.SizeInBytes));
 
-                if (!export.Deserialize())
+                int result = export.Deserialize();
+                if (result == -1)
                     return false;
 
+                pos += (uint)result;
                 Exports.Add(export);
             }
 

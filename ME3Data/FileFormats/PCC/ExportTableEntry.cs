@@ -54,7 +54,7 @@ namespace ME3Data.FileFormats.PCC
 
         }
 
-        public bool Deserialize()
+        public int Deserialize()
         {
 
             // TODO: Handle dependencies
@@ -71,12 +71,14 @@ namespace ME3Data.FileFormats.PCC
             FileOffset = Data.ReadUInt32();
             ExportFlags = Data.ReadUInt32();
 
-            // All of these seem unused in ME3
-            Data.ReadRawData(4); // Skip netObjectCount
+            // TODO: save / figure these out!
+            var netObjectCount = Data.ReadInt32(); // Skip netObjectCount
+            Data.ReadRawData(netObjectCount * 4); // Skip netObjects
+
             Data.ReadRawData(16); // Skip package GUID's
             Data.ReadRawData(4); // Skip package flags
 
-            return true;
+            return (int)SizeInBytes + 4 * netObjectCount;
         }
     }
 }

@@ -102,7 +102,17 @@ namespace ME3Data.FileFormats.PCC
         {
             if (reference.Index == 0 && reference.ModNumber >= 0)
                 return String.Empty; // Error, weird mod number!
-            return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : null;
+            return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : String.Empty;
+        }
+
+        public String GetClassName(int objIndex)
+        {
+            if (objIndex < 0)
+                return Imports[(objIndex * -1) - 1].ObjectName;
+            else if (objIndex > 0)
+                return Exports[objIndex - 1].ObjectName;
+            else
+                return "Class";
         }
 
         private bool DeserializeHeader(ObjectReader header)

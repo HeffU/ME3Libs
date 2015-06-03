@@ -60,6 +60,7 @@ namespace ME3Data.FileFormats.PCC
             // TODO: Handle dependencies
             // 2nd pass after this to resolve names etc?
             _ClassIndex = Data.ReadInt32();
+            ClassName = CurrentPCC.GetClassName(_ClassIndex);
             _SuperIndex = Data.ReadInt32();
             _OuterIntex = Data.ReadInt32();
             _ObjectNameRef = Data.ReadNameRef();

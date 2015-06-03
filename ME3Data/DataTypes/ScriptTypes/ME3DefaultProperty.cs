@@ -23,7 +23,13 @@ namespace ME3Data.DataTypes.ScriptTypes
         ArrayProperty = 10,
 
         // Built-in struct properties:
-        Vector = 11
+        Vector = 11,
+        Color = 12,
+        LinearColor = 13,
+        TwoVectors = 14,
+        Vector4 = 15,
+        Vector2D = 16,
+        
     }
 
     public abstract class DefaultPropertyValue
@@ -58,15 +64,32 @@ namespace ME3Data.DataTypes.ScriptTypes
 
     public class BytePropertyValue : DefaultPropertyValue
     {
-        public String EnumName;
-        public String EnumValue;
+        public byte Value;
 
         public BytePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
             : base(data, pcc, size) { }
 
         public override bool Deserialize()
         {
-            EnumName = PCC.GetName(Data.ReadNameRef());
+            Value = Data.ReadByte();
+            return true;
+        }
+    }
+
+    public class EnumPropertyValue : DefaultPropertyValue
+    {
+        public String EnumName;
+        public String EnumValue;
+
+        public EnumPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size, String name)
+            : base(data, pcc, size)
+        {
+            EnumName = name;
+        }
+
+
+        public override bool Deserialize()
+        {
             EnumValue = PCC.GetName(Data.ReadNameRef());
             return true;
         }
@@ -181,12 +204,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public byte[] Value;
 
-        public StructPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public StructPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size, String name)
+            : base(data, pcc, size) 
+        {
+            StructName = name;
+        }
 
         public override bool Deserialize()
         {
-            //StructName = PCC.GetName(Data.ReadNameRef());
             Value = Data.ReadRawData((int)Size - 8);
             return true;
         }
@@ -266,63 +291,66 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             ArrayIndex = Data.ReadUInt32();
 
-            return DeserializeValue(Type, out Value);
+            return DeserializeValue(Type, out Value, Size);
         }
 
-        public bool DeserializeValue(PropertyType type, out DefaultPropertyValue value)
+        public bool DeserializeValue(PropertyType type, out DefaultPropertyValue value, UInt32 size)
         {
             value = null;
             switch (type) // Adjust size for certain types:
             {
                 case PropertyType.BoolProperty:
-                    value = new BoolPropertyValue(Data, PCC, Size);
+                    value = new BoolPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.ByteProperty:
-                    value = new BytePropertyValue(Data, PCC, Size);
+                    var enumName = PCC.GetName(Data.ReadNameRef());
+                    if (size == 16) // if it's an enum-based byte value
+                        value = new EnumPropertyValue(Data, PCC, size, enumName);
+                    else
+                        value = new BytePropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.IntProperty:
-                    value = new IntPropertyValue(Data, PCC, Size);
+                    value = new IntPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.FloatProperty:
-                    value = new FloatPropertyValue(Data, PCC, Size);
+                    value = new FloatPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.StrProperty:
-                    value = new StrPropertyValue(Data, PCC, Size);
+                    value = new StrPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.StringRefProperty:
-                    value = new StringRefPropertyValue(Data, PCC, Size);
+                    value = new StringRefPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.NameProperty:
-                    value = new NamePropertyValue(Data, PCC, Size);
+                    value = new NamePropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.ObjectProperty:
-                    value = new ObjectPropertyValue(Data, PCC, Size);
+                    value = new ObjectPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.DelegateProperty:
-                    value = new DelegatePropertyValue(Data, PCC, Size);
+                    value = new DelegatePropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                 case PropertyType.StructProperty:
-                    var name = PCC.GetName(Data.ReadNameRef());
+                    var structName = PCC.GetName(Data.ReadNameRef());
                     // If it's a hardcoded struct type, deserialize it as that.
-                    if (Enum.GetNames(typeof(PropertyType)).Skip(11).Contains(name))
-                        return DeserializeValue((PropertyType)Enum.Parse(typeof(PropertyType), name), out value);
+                    if (Enum.GetNames(typeof(PropertyType)).Skip(11).Contains(structName))
+                        return DeserializeValue((PropertyType)Enum.Parse(typeof(PropertyType), structName), out value, size);
 
                     // otherwise use the deserialization of a user-defined struct:
-                    value = new StructPropertyValue(Data, PCC, Size);
-                    (value as StructPropertyValue).StructName = name;
+                    value = new StructPropertyValue(Data, PCC, size, structName);
                     return value.Deserialize();
 
                 case PropertyType.ArrayProperty:
-                    value = new ArrayPropertyValue(Data, PCC, Size);
+                    value = new ArrayPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
                     //---------
@@ -331,6 +359,26 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.Vector:
                     value = new VectorPropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                case PropertyType.Color:
+                    value = new ColorPropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                case PropertyType.LinearColor:
+                    value = new LinearColorPropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                case PropertyType.TwoVectors:
+                    value = new VectorPairPropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                case PropertyType.Vector4:
+                    value = new Vector4PropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                case PropertyType.Vector2D:
+                    value = new Vector2DPropertyValue(Data, PCC, 0);
                     return value.Deserialize();
 
                 default:

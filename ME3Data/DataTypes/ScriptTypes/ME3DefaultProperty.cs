@@ -29,7 +29,15 @@ namespace ME3Data.DataTypes.ScriptTypes
         TwoVectors = 14,
         Vector4 = 15,
         Vector2D = 16,
-        
+        Rotator = 17,
+        Guid = 18,
+        Sphere = 19,
+        Plane = 20,
+        Scale = 21,
+        Box = 22,
+        Quat = 23,
+        Matrix = 24,
+        IntPoint = 25
     }
 
     public abstract class DefaultPropertyValue
@@ -52,8 +60,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public bool Value;
 
-        public BoolPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public BoolPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 1) { }
 
         public override bool Deserialize()
         {
@@ -66,8 +74,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public byte Value;
 
-        public BytePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public BytePropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 1) { }
 
         public override bool Deserialize()
         {
@@ -99,8 +107,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public Int32 Value;
 
-        public IntPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public IntPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 4) { }
 
         public override bool Deserialize()
         {
@@ -113,8 +121,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public float Value;
 
-        public FloatPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public FloatPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 4) { }
 
         public override bool Deserialize()
         {
@@ -156,8 +164,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public String Name;
 
-        public NamePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public NamePropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 8) { }
 
         public override bool Deserialize()
         {
@@ -171,8 +179,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         public ME3Object Object { get { return PCC.GetObject(Index); } }
         public Int32 Index;
 
-        public ObjectPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public ObjectPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 4) { }
 
         public override bool Deserialize()
         {
@@ -300,7 +308,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             switch (type) // Adjust size for certain types:
             {
                 case PropertyType.BoolProperty:
-                    value = new BoolPropertyValue(Data, PCC, size);
+                    value = new BoolPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.ByteProperty:
@@ -308,15 +316,15 @@ namespace ME3Data.DataTypes.ScriptTypes
                     if (size == 16) // if it's an enum-based byte value
                         value = new EnumPropertyValue(Data, PCC, size, enumName);
                     else
-                        value = new BytePropertyValue(Data, PCC, size);
+                        value = new BytePropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.IntProperty:
-                    value = new IntPropertyValue(Data, PCC, size);
+                    value = new IntPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.FloatProperty:
-                    value = new FloatPropertyValue(Data, PCC, size);
+                    value = new FloatPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.StrProperty:
@@ -328,11 +336,11 @@ namespace ME3Data.DataTypes.ScriptTypes
                     return value.Deserialize();
 
                 case PropertyType.NameProperty:
-                    value = new NamePropertyValue(Data, PCC, size);
+                    value = new NamePropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.ObjectProperty:
-                    value = new ObjectPropertyValue(Data, PCC, size);
+                    value = new ObjectPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.DelegateProperty:
@@ -353,33 +361,69 @@ namespace ME3Data.DataTypes.ScriptTypes
                     value = new ArrayPropertyValue(Data, PCC, size);
                     return value.Deserialize();
 
-                    //---------
-                    //Hardcoded
-                    //---------
+                #region Hardcoded Structs
 
                 case PropertyType.Vector:
-                    value = new VectorPropertyValue(Data, PCC, 0);
+                    value = new VectorPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.Color:
-                    value = new ColorPropertyValue(Data, PCC, 0);
+                    value = new ColorPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.LinearColor:
-                    value = new LinearColorPropertyValue(Data, PCC, 0);
+                    value = new LinearColorPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.TwoVectors:
-                    value = new VectorPairPropertyValue(Data, PCC, 0);
+                    value = new VectorPairPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.Vector4:
-                    value = new Vector4PropertyValue(Data, PCC, 0);
+                    value = new Vector4PropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.Vector2D:
-                    value = new Vector2DPropertyValue(Data, PCC, 0);
+                    value = new Vector2DPropertyValue(Data, PCC);
                     return value.Deserialize();
+
+                case PropertyType.Rotator:
+                    value = new RotatorPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Guid:
+                    value = new GUIDPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Sphere:
+                    value = new SpherePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Plane:
+                    value = new PlanePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Scale:
+                    value = new ScalePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Box:
+                    value = new BoxPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Quat:
+                    value = new QuatPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.Matrix:
+                    value = new MatrixPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.IntPoint:
+                    value = new IntPointPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                #endregion
 
                 default:
                     return false;

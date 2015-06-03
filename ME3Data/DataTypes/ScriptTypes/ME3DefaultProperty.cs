@@ -10,17 +10,20 @@ namespace ME3Data.DataTypes.ScriptTypes
 {
     public enum PropertyType
     {
-        BoolProperty,
-        ByteProperty,
-        IntProperty,
-        FloatProperty,
-        StrProperty,
-        StringRefProperty,
-        NameProperty,
-        ObjectProperty,
-        DelegateProperty,
-        StructProperty,
-        ArrayProperty
+        BoolProperty = 0,
+        ByteProperty = 1,
+        IntProperty = 2,
+        FloatProperty = 3,
+        StrProperty = 4,
+        StringRefProperty = 5,
+        NameProperty = 6,
+        ObjectProperty = 7,
+        DelegateProperty = 8,
+        StructProperty = 9,
+        ArrayProperty = 10,
+
+        // Built-in struct properties:
+        Vector = 11
     }
 
     public abstract class DefaultPropertyValue
@@ -174,6 +177,8 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         // TODO
         public String StructName;
+        public List<DefaultPropertyValue> MemberValues;
+
         public byte[] Value;
 
         public StructPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
@@ -181,7 +186,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public override bool Deserialize()
         {
-            StructName = PCC.GetName(Data.ReadNameRef());
+            //StructName = PCC.GetName(Data.ReadNameRef());
             Value = Data.ReadRawData((int)Size - 8);
             return true;
         }
@@ -261,66 +266,76 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             ArrayIndex = Data.ReadUInt32();
 
-            switch (Type) // Adjust size for certain types:
+            return DeserializeValue(Type, out Value);
+        }
+
+        public bool DeserializeValue(PropertyType type, out DefaultPropertyValue value)
+        {
+            value = null;
+            switch (type) // Adjust size for certain types:
             {
                 case PropertyType.BoolProperty:
-                    Value = new BoolPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.ByteProperty:
-                    Value = new BytePropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.IntProperty:
-                    Value = new IntPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.FloatProperty:
-                    Value = new FloatPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.StrProperty:
-                    Value = new StrPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.StringRefProperty:
-                    Value = new StringRefPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.NameProperty:
-                    Value = new NamePropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.ObjectProperty:
-                    Value = new ObjectPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.DelegateProperty:
-                    Value = new DelegatePropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.StructProperty:
-                    Value = new StructPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-                case PropertyType.ArrayProperty:
-                    Value = new ArrayPropertyValue(Data, PCC, Size);
-                    if (!Value.Deserialize())
-                        return false;
-                    break;
-            }
+                    value = new BoolPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
 
-            return true;
+                case PropertyType.ByteProperty:
+                    value = new BytePropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.IntProperty:
+                    value = new IntPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.FloatProperty:
+                    value = new FloatPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.StrProperty:
+                    value = new StrPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.StringRefProperty:
+                    value = new StringRefPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.NameProperty:
+                    value = new NamePropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.ObjectProperty:
+                    value = new ObjectPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.DelegateProperty:
+                    value = new DelegatePropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                case PropertyType.StructProperty:
+                    var name = PCC.GetName(Data.ReadNameRef());
+                    // If it's a hardcoded struct type, deserialize it as that.
+                    if (Enum.GetNames(typeof(PropertyType)).Skip(11).Contains(name))
+                        return DeserializeValue((PropertyType)Enum.Parse(typeof(PropertyType), name), out value);
+
+                    // otherwise use the deserialization of a user-defined struct:
+                    value = new StructPropertyValue(Data, PCC, Size);
+                    (value as StructPropertyValue).StructName = name;
+                    return value.Deserialize();
+
+                case PropertyType.ArrayProperty:
+                    value = new ArrayPropertyValue(Data, PCC, Size);
+                    return value.Deserialize();
+
+                    //---------
+                    //Hardcoded
+                    //---------
+
+                case PropertyType.Vector:
+                    value = new VectorPropertyValue(Data, PCC, 0);
+                    return value.Deserialize();
+
+                default:
+                    return false;
+            }
         }
     }
 }

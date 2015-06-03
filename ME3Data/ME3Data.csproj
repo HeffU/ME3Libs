@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\DataStructs.cs" />
+    <Compile Include="DataTypes\HardcodedDefaultStructs.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Class.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Const.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3DefaultProperty.cs" />

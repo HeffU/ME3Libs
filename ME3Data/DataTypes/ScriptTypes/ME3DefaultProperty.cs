@@ -288,11 +288,18 @@ namespace ME3Data.DataTypes.ScriptTypes
                 Data.ReadInt32();       // TODO: figure this out!
 
             TypeNameRef = Data.ReadNameRef();
-            if (TypeNameRef.ModNumber != 0) // another weird thing, this type name is not valid at all.
-                return false;
-
-            TypeName = PCC.GetName(TypeNameRef);
-            Type = (PropertyType)Enum.Parse(typeof(PropertyType), TypeName);
+            if (TypeNameRef.ModNumber != 0) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?
+            {
+                Data.ReadInt32();
+                TypeName = PCC.Names[TypeNameRef.ModNumber];
+                var pTypeName = PCC.GetName(Data.ReadNameRef());
+                Type = (PropertyType)Enum.Parse(typeof(PropertyType), pTypeName);
+            }
+            else
+            {
+                TypeName = PCC.GetName(TypeNameRef);
+                Type = (PropertyType)Enum.Parse(typeof(PropertyType), TypeName);
+            }
 
             Size = Data.ReadUInt32();
             switch (Type) // Adjust size for certain types:

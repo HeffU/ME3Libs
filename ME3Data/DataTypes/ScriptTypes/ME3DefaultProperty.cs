@@ -147,15 +147,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
     public class StringRefPropertyValue : DefaultPropertyValue
     {
-        // TODO
-        public byte[] Value;
+        public Int32 Value;
 
-        public StringRefPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public StringRefPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 4) { }
 
         public override bool Deserialize()
         {
-            Value = Data.ReadRawData((int)Size);
+            Value = Data.ReadInt32();
             return true;
         }
     }
@@ -191,26 +190,31 @@ namespace ME3Data.DataTypes.ScriptTypes
 
     public class DelegatePropertyValue : DefaultPropertyValue
     {
-        // TODO
-        public byte[] Value;
+        public Int32 OuterIndex; // Object that contains the assigned delegate
+        public String DelegateValue;
+        public String DelegateName;
 
-        public DelegatePropertyValue(ObjectReader data, PCCFile pcc, UInt32 size)
-            : base(data, pcc, size) { }
+        public DelegatePropertyValue(ObjectReader data, PCCFile pcc, String name)
+            : base(data, pcc, 12) 
+        {
+            DelegateName = name.Substring(2, name.Length - 12);
+        }
 
         public override bool Deserialize()
         {
-            Value = Data.ReadRawData((int)Size);
+            OuterIndex = Data.ReadIndex();
+            DelegateValue = PCC.GetName(Data.ReadNameRef());
             return true;
         }
     }
 
     public class StructPropertyValue : DefaultPropertyValue
     {
-        // TODO
         public String StructName;
         public List<DefaultPropertyValue> MemberValues;
 
         public byte[] Value;
+        public List<ME3DefaultProperty> MemberProperties;
 
         public StructPropertyValue(ObjectReader data, PCCFile pcc, UInt32 size, String name)
             : base(data, pcc, size) 
@@ -220,7 +224,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public override bool Deserialize()
         {
-            Value = Data.ReadRawData((int)Size - 8);
+            MemberProperties = new List<ME3DefaultProperty>();
+            var current = new ME3DefaultProperty(Data, PCC);
+
+            while (current.Deserialize())
+            {
+                MemberProperties.Add(current);
+                current = new ME3DefaultProperty(Data, PCC);
+            }
             return true;
         }
     }
@@ -332,7 +343,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                     return value.Deserialize();
 
                 case PropertyType.StringRefProperty:
-                    value = new StringRefPropertyValue(Data, PCC, size);
+                    value = new StringRefPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.NameProperty:
@@ -344,7 +355,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                     return value.Deserialize();
 
                 case PropertyType.DelegateProperty:
-                    value = new DelegatePropertyValue(Data, PCC, size);
+                    value = new DelegatePropertyValue(Data, PCC, Name);
                     return value.Deserialize();
 
                 case PropertyType.StructProperty:

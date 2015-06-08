@@ -15,7 +15,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int64 IgnoreMask;
 
         public Int16 LabelTableOffset;
-        public Int32 StateFlags;
+        public StateFlags StateFlags;
 
         public Int32 FunctionMapCount;
         public List<ME3Function> FunctionMap;
@@ -40,7 +40,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             IgnoreMask = Data.ReadInt64();
 
             LabelTableOffset = Data.ReadInt16();
-            StateFlags = Data.ReadInt32();
+            StateFlags = (StateFlags)Data.ReadInt32();
 
             FunctionMapCount = Data.ReadInt32();
             for (int i = 0; i < FunctionMapCount; i++)
@@ -62,7 +62,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             FunctionMap = new List<ME3Function>();
             foreach (var funcEntry in _FunctionMap)
             {
-                var func = PCC.GetObject(funcEntry.ObjectIndex) as ME3Function;
+                var func = PCC.GetExportObject(funcEntry.ObjectIndex) as ME3Function;
                 if (func == null)
                     return false;
                 FunctionMap.Add(func);

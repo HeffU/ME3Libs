@@ -26,12 +26,15 @@ namespace ME3Data.FileFormats.PCC
         /// </summary>
         public List<String> Names { get; private set; }
 
+        /// <summary>
+        /// File flags for this PCC.
+        /// </summary>
+        private PackageFlags PackageFlags;
 
         public PCCStreamReader Data;
 
         private UInt32 _unkn1;
         private String _folderName;
-        private UInt32 _packageFlags;
         private UInt32 _unknDummy;
 
         private Int32 _nameCount;
@@ -88,6 +91,12 @@ namespace ME3Data.FileFormats.PCC
                     return false;
             }
 
+            foreach (ExportTableEntry export in Exports)
+            {
+                if (!export.Object.ResolveLinks())
+                    return false;
+            }
+
             return true;
         }
 
@@ -130,12 +139,29 @@ namespace ME3Data.FileFormats.PCC
             return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : String.Empty;
         }
 
-        public ME3Object GetObject(Int32 objIndex)
+        public ME3Object GetExportObject(Int32 objIndex)
         {
             if (objIndex <= 0)
                 return null;
             else
                 return Exports[objIndex - 1].Object;
+        }
+
+        public ObjectTableEntry GetObjectEntry(Int32 index)
+        {
+            if (index < 0)
+            {
+                var proper = -index - 1;
+                if (proper < 0 || proper >= Imports.Count)
+                    return null;
+                return Imports[proper];
+            } 
+            else if (index > 0 && index <= Exports.Count)
+            {
+                return Exports[index - 1];
+            }
+
+            return null;
         }
 
         public String GetClassName(int objIndex)
@@ -160,7 +186,7 @@ namespace ME3Data.FileFormats.PCC
 
             _unkn1 = header.ReadUInt32();
             _folderName = header.ReadString();
-            _packageFlags = header.ReadUInt32();
+            PackageFlags = (PackageFlags)header.ReadUInt32();
             _unknDummy = header.ReadUInt32();
 
             _nameCount = header.ReadInt32();

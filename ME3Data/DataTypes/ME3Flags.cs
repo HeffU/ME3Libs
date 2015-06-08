@@ -192,4 +192,10 @@ namespace ME3Data.DataTypes
         Exported                = 0x04000000U,
         NativeOnly              = 0x20000000U,
     }
+
+    [FlagsAttribute]
+    public enum ExportFlags : uint
+    {
+        ForcedExport = 0x00000001U,
+    }
 }

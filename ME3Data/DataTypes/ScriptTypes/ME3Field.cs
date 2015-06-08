@@ -35,8 +35,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.ResolveLinks();
 
-            SuperField = PCC.GetObject(_SuperIndex) as ME3Field;
-            NextField = PCC.GetObject(_NextIndex) as ME3Field;
+            SuperField = PCC.GetExportObject(_SuperIndex) as ME3Field;
+            NextField = PCC.GetExportObject(_NextIndex) as ME3Field;
 
             return result;
         }

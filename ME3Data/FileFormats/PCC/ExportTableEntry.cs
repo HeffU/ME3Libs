@@ -19,7 +19,7 @@ namespace ME3Data.FileFormats.PCC
         /// <summary>
         /// The flags of this export object.
         /// </summary>
-        public UInt64 ObjectFlags;
+        public ObjectFlags ObjectFlags;
 
         /// <summary>
         /// Size of the object in bytes
@@ -34,7 +34,7 @@ namespace ME3Data.FileFormats.PCC
         /// <summary>
         /// Flags for this export entry.
         /// </summary>
-        public UInt32 ExportFlags;
+        public ExportFlags ExportFlags;
 
         /// <summary>
         /// Size of an export table entry.
@@ -66,11 +66,11 @@ namespace ME3Data.FileFormats.PCC
             _ObjectNameRef = Data.ReadNameRef();
             ObjectName = CurrentPCC.GetName(_ObjectNameRef);
             _ArchetypeIndex = Data.ReadInt32();
-            ObjectFlags = Data.ReadUInt64();
+            ObjectFlags = (ObjectFlags)Data.ReadUInt64();
 
             Size = Data.ReadUInt32();
             FileOffset = Data.ReadUInt32();
-            ExportFlags = Data.ReadUInt32();
+            ExportFlags = (ExportFlags)Data.ReadUInt32();
 
             // TODO: save / figure these out!
             var netObjectCount = Data.ReadInt32(); // Skip netObjectCount

@@ -53,7 +53,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             Variables = new List<ME3Property>();
             Constants = new List<ME3Const>();
 
-            ME3Field obj = PCC.GetObject(FirstChildIndex) as ME3Field;
+            ME3Field obj = PCC.GetExportObject(FirstChildIndex) as ME3Field;
             while (obj != null)
             {
                 Members.Add(obj);

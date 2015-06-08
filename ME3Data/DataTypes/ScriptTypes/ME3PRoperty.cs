@@ -14,7 +14,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public UInt16 ArraySize;
         public UInt16 ArrayElementSize;
 
-        public UInt64 PropertyFlags;
+        public PropertyFlags PropertyFlags;
 
         // Network
         public UInt16 ReplicateOffset;
@@ -33,8 +33,8 @@ namespace ME3Data.DataTypes.ScriptTypes
             ArraySize = (UInt16)(ArrayInfo & 0x0000FFFFU);
             ArrayElementSize = (UInt16)(ArrayInfo >> 16);
 
-            PropertyFlags = Data.ReadUInt64();
-            if (false) // Has .Net flag
+            PropertyFlags = (PropertyFlags)Data.ReadUInt64();
+            if (PropertyFlags.HasFlag(PropertyFlags.Net))
                 ReplicateOffset = Data.ReadUInt16();
 
             return result;

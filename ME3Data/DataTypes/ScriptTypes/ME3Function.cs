@@ -14,7 +14,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public Byte OperatorPrescedence;
 
-        public Int32 FunctionFlags;
+        public FunctionFlags FunctionFlags;
 
         public UInt16 ReplicateOffset;
 
@@ -36,9 +36,9 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             //OperatorPrescedence = Data.ReadByte(); // Does not appear in ME3?
 
-            FunctionFlags = Data.ReadInt32();
+            FunctionFlags = (FunctionFlags)Data.ReadInt32();
 
-            if (false) // Has .Net flag
+            if (FunctionFlags.HasFlag(FunctionFlags.Net))
                 ReplicateOffset = Data.ReadUInt16();
 
             return result;
@@ -51,7 +51,14 @@ namespace ME3Data.DataTypes.ScriptTypes
             Parameters = new List<ME3Property>();
             foreach(var variable in Variables)
             {
-                //TODO: check flag, set returnval or param.
+                if (variable.PropertyFlags.HasFlag(PropertyFlags.ReturnParm))
+                {
+                    ReturnValue = variable;
+                }
+                else if (variable.PropertyFlags.HasFlag(PropertyFlags.Parm))
+                {
+                    Parameters.Add(variable);
+                }
             }
 
             return result;

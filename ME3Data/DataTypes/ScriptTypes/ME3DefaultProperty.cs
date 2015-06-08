@@ -175,7 +175,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
     public class ObjectPropertyValue : DefaultPropertyValue
     {
-        public ME3Object Object { get { return PCC.GetObject(Index); } }
+        public ME3Object Object { get { return PCC.GetExportObject(Index); } }
         public Int32 Index;
 
         public ObjectPropertyValue(ObjectReader data, PCCFile pcc)

@@ -10,7 +10,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 {
     public class ME3Class : ME3State
     {
-        public Int32 ClassFlags;
+        public ClassFlags ClassFlags;
 
         public ME3Class OuterClass;
 
@@ -27,7 +27,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int32 DefaultPropertyIndex;
 
         public Int32 FunctionRefCount;
-        public List<ME3Function> FunctionRefs;
+        //public List<ME3Function> FunctionRefs;
+        public List<String> FunctionRefs;
 
         private Int32 _OuterClassIndex;
 
@@ -53,7 +54,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.Deserialize();
 
-            ClassFlags = Data.ReadInt32();
+            ClassFlags = (ClassFlags)Data.ReadInt32();
 
             _OuterClassIndex = Data.ReadInt32();
             ConfigNameIndex = Data.ReadInt32();
@@ -96,7 +97,30 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.ResolveLinks();
 
-            //TODO: fix
+            ImplementedInterfaces = new List<ME3Class>();
+            Components = new List<ME3Object>();
+            FunctionRefs = new List<String>();
+
+            foreach (var interfaceRef in _ImplInterfaces)
+            {
+                var obj = PCC.GetExportObject(interfaceRef.ObjectIndex);
+                if (obj != null)
+                    ImplementedInterfaces.Add(obj as ME3Class);
+            }
+
+            foreach (var component in _Components)
+            {
+                var obj = PCC.GetExportObject(component.ObjectIndex);
+                if (obj != null)
+                    Components.Add(obj);
+            }
+
+            foreach (var funcRef in _FunctionRefs)
+            {
+                string name = PCC.GetObjectEntry(funcRef).ObjectName;
+                FunctionRefs.Add(name);
+                // TODO: handle this better, by-name lookup?
+            }
 
             return result;
         }

@@ -97,6 +97,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.ResolveLinks();
 
+            OuterClass = PCC.GetExportObject(_OuterClassIndex) as ME3Class;
+
             ImplementedInterfaces = new List<ME3Class>();
             Components = new List<ME3Object>();
             FunctionRefs = new List<String>();

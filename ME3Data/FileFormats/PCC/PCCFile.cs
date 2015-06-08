@@ -1,5 +1,6 @@
 ﻿using ME3Data.DataTypes;
 using ME3Data.DataTypes.ScriptTypes;
+using ME3Data.DataTypes.ScriptTypes.Properties;
 using ME3Data.Utility;
 using System;
 using System.Collections.Generic;
@@ -114,10 +115,55 @@ namespace ME3Data.FileFormats.PCC
                     entry.Object = funcObj;
                     return funcObj.Deserialize();
 
+                case "Struct":
+                    var structObj = new ME3Struct(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = structObj;
+                    return structObj.Deserialize();
+
                 case "ScriptStruct":
                     var scriptstructObj = new ME3ScriptStruct(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
                     entry.Object = scriptstructObj;
                     return scriptstructObj.Deserialize();
+
+                case "ArrayProperty":
+                    var arrayProp = new ME3ArrayProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = arrayProp;
+                    return arrayProp.Deserialize();
+
+                case "IntProperty":
+                    var intProp = new ME3IntProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = intProp;
+                    return intProp.Deserialize();
+
+                case "BoolProperty":
+                    var boolProp = new ME3BoolProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = boolProp;
+                    return boolProp.Deserialize();
+
+                case "ByteProperty":
+                    var byteProp = new ME3ByteProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = byteProp;
+                    return byteProp.Deserialize();
+
+                case "ObjectProperty":
+                    var objectProp = new ME3ObjectProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = objectProp;
+                    return objectProp.Deserialize();
+
+                case "ClassProperty":
+                    var classProp = new ME3ClassProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = classProp;
+                    return classProp.Deserialize();
+
+                case "ComponentProperty":
+                    var compProp = new ME3ComponentProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = compProp;
+                    return compProp.Deserialize();
+
+                case "DelegateProperty":
+                    var deleProp = new ME3DelegateProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = deleProp;
+                    return deleProp.Deserialize();
 
                 default :
                     var obj = new ME3Object(Data.GetReader(entry.FileOffset, entry.Size), entry, this);

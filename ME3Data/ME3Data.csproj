@@ -53,6 +53,14 @@
     <Compile Include="DataTypes\ScriptTypes\ME3ScriptStruct.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3State.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Struct.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3ArrayProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3BoolProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3ByteProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3ClassProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3ComponentProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3DelegateProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3IntProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3ObjectProperty.cs" />
     <Compile Include="FileFormats\PCC\ExportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\ImportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\PCCFile.cs" />

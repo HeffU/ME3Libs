@@ -25,9 +25,9 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             var ArrayInfo = Data.ReadInt32();
             ArraySize = (UInt16)(ArrayInfo & 0x0000FFFFU);
@@ -37,7 +37,14 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (false) // Has .Net flag
                 ReplicateOffset = Data.ReadUInt16();
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            return result;
         }
     }
 }

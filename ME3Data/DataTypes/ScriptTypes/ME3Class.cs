@@ -49,9 +49,9 @@ namespace ME3Data.DataTypes.ScriptTypes
             _FunctionRefs = new List<Int32>();
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             ClassFlags = Data.ReadInt32();
 
@@ -89,7 +89,16 @@ namespace ME3Data.DataTypes.ScriptTypes
                 _FunctionRefs.Add(Data.ReadInt32());
             }
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            //TODO: fix
+
+            return result;
         }
     }
 }

@@ -30,9 +30,9 @@ namespace ME3Data.DataTypes.ScriptTypes
             _FunctionMap = new List<FunctionMapEntry>();
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             _unknown = Data.ReadInt32();
 
@@ -52,7 +52,23 @@ namespace ME3Data.DataTypes.ScriptTypes
                 _FunctionMap.Add(funcEntry);
             }
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            FunctionMap = new List<ME3Function>();
+            foreach (var funcEntry in _FunctionMap)
+            {
+                var func = PCC.GetObject(funcEntry.ObjectIndex) as ME3Function;
+                if (func == null)
+                    return false;
+                FunctionMap.Add(func);
+            }
+
+            return result;
         }
     }
 }

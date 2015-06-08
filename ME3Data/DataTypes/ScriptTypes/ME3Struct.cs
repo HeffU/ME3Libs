@@ -30,9 +30,9 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             FirstChildIndex = Data.ReadIndex();
 
@@ -40,12 +40,44 @@ namespace ME3Data.DataTypes.ScriptTypes
             DataScriptSize = Data.ReadInt32();
             DataScript = Data.ReadRawData(DataScriptSize);
 
-            return true;
+            return result;
         }
 
-        public void LinkMembers()
+        public override bool ResolveLinks()
         {
+            var result = base.ResolveLinks();
 
+            Members = new List<ME3Object>();
+            Structs = new List<ME3Struct>();
+            Enums = new List<ME3Enum>();
+            Variables = new List<ME3Property>();
+            Constants = new List<ME3Const>();
+
+            ME3Field obj = PCC.GetObject(FirstChildIndex) as ME3Field;
+            while (obj != null)
+            {
+                Members.Add(obj);
+                if (obj.GetType().IsSubclassOf(typeof(ME3Property)))
+                {
+                    Variables.Add(obj as ME3Property);
+                } 
+                else if (String.Compare(obj.ExportEntry.ClassName, "enum", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    Enums.Add(obj as ME3Enum);
+                } 
+                else if (String.Compare(obj.ExportEntry.ClassName, "const", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    Constants.Add(obj as ME3Const);
+                }
+                else if (String.Compare(obj.ExportEntry.ClassName, "Struct", StringComparison.OrdinalIgnoreCase) == 0
+                    || String.Compare(obj.ExportEntry.ClassName, "ScriptStruct", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    Structs.Add(obj as ME3Struct);
+                }
+                obj = obj.NextField;
+            }
+
+            return result;
         }
     }
 }

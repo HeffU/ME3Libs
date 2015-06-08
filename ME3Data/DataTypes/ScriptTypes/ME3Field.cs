@@ -21,14 +21,24 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             _SuperIndex = Data.ReadIndex();
             _NextIndex = Data.ReadIndex();
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            SuperField = PCC.GetObject(_SuperIndex) as ME3Field;
+            NextField = PCC.GetObject(_NextIndex) as ME3Field;
+
+            return result;
         }
     }
 }

@@ -19,16 +19,26 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             var nameCount = Data.ReadInt32();
             _NameRefs = new List<NameReference>(nameCount);
             for (int n = 0; n < nameCount; n++)
+            {
                 _NameRefs.Add(Data.ReadNameRef());
+                Names.Add(PCC.GetName(_NameRefs[n]));
+            }
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            return result;
         }
     }
 }

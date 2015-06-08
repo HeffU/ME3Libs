@@ -17,12 +17,19 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
             Value = Data.ReadString();
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            return result;
         }
     }
 }

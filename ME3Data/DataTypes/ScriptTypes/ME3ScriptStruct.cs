@@ -12,21 +12,27 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public Int32 StructFlags;
 
-
         public ME3ScriptStruct(ObjectReader data, ExportTableEntry exp, PCCFile pccObj)
             : base(data, exp, pccObj)
         {
 
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             StructFlags = Data.ReadInt32();
             DeserializeDefaultProperties();
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            return result;
         }
     }
 }

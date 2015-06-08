@@ -18,15 +18,19 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public UInt16 ReplicateOffset;
 
+        public List<ME3Property> Parameters;
+
+        public ME3Property ReturnValue;
+
         public ME3Function(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
             : base(data, exp, pcc)
         {
 
         }
 
-        public bool Deserialize()
+        public override bool Deserialize()
         {
-            base.Deserialize();
+            var result = base.Deserialize();
 
             NativeToken = Data.ReadUInt16();
 
@@ -37,7 +41,20 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (false) // Has .Net flag
                 ReplicateOffset = Data.ReadUInt16();
 
-            return true;
+            return result;
+        }
+
+        public override bool ResolveLinks()
+        {
+            var result = base.ResolveLinks();
+
+            Parameters = new List<ME3Property>();
+            foreach(var variable in Variables)
+            {
+                //TODO: check flag, set returnval or param.
+            }
+
+            return result;
         }
     }
 }

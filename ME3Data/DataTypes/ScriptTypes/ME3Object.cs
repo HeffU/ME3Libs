@@ -30,7 +30,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             ExportEntry = exp;
         }
 
-        public bool Deserialize()
+        public virtual bool Deserialize()
         {
             NetIndex = Data.ReadIndex();
 
@@ -53,6 +53,11 @@ namespace ME3Data.DataTypes.ScriptTypes
                 current = new ME3DefaultProperty(Data, PCC);
             }
 
+            return true;
+        }
+
+        public virtual bool ResolveLinks()
+        {
             return true;
         }
     }

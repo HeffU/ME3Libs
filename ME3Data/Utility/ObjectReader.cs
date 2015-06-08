@@ -110,19 +110,21 @@ namespace ME3Data.Utility
             {
                 size = -size;
                 unicode = true;
+            } 
+            else if (size == 0)
+            {
+                return String.Empty;
             }
 
             if (unicode)
             {
-                var bytes = ReadRawData((size * 2) - 2);
-                _position(2); // '\0'
-                return Encoding.Unicode.GetString(bytes);
+                var bytes = ReadRawData((size * 2));
+                return Encoding.Unicode.GetString(bytes).Substring(0, size - 1);
             }
             else
             {
-                var bytes = ReadRawData(size - 1);
-                _position(1); // '\0'
-                return Encoding.ASCII.GetString(bytes);
+                var bytes = ReadRawData(size);
+                return Encoding.ASCII.GetString(bytes).Substring(0, size - 1);
             }
         }
     }

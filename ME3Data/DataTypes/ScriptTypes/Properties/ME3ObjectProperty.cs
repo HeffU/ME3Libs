@@ -10,7 +10,16 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
 {
     public class ME3ObjectProperty : ME3Property
     {
+        /// <summary>
+        /// The object this property refers to.
+        /// Only valid if IsNativeImport is false.
+        /// </summary>
         public ME3Object Object;
+
+        /// <summary>
+        /// True if this object is an import in Core.pcc, thus being imported from the VM itself.
+        /// </summary>
+        public bool IsNativeImport;
 
         private Int32 _ObjectIndex;
 
@@ -33,13 +42,13 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
         {
             var result = base.ResolveLinks();
 
-            var entry = PCC.GetObjectEntry(_ObjectIndex); // links to name list, redo this whole thing.
+            var entry = PCC.GetObjectEntry(_ObjectIndex);
             if (entry != null)
             {
                 Object = PCC.GetObjectEntry(_ObjectIndex).Object as ME3Object;
             }
-            if (Object == null)
-                return true; // should be false.
+
+            IsNativeImport = Object == null ? false : true;
 
             return result;
         }

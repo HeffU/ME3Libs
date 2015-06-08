@@ -59,7 +59,7 @@ namespace ME3Data.FileFormats.PCC
         private UInt32 _unkn4;
         private UInt32 _unkn5;
 
-        private UInt32 _compressionFlag;
+        private FileCompressionFlags _compressionFlag;
         private UInt32 _chunkCount;
 
         public PCCFile(PCCStreamReader data)
@@ -124,6 +124,21 @@ namespace ME3Data.FileFormats.PCC
                     var scriptstructObj = new ME3ScriptStruct(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
                     entry.Object = scriptstructObj;
                     return scriptstructObj.Deserialize();
+
+                case "Enum":
+                    var enumObj = new ME3Enum(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = enumObj;
+                    return enumObj.Deserialize();
+
+                case "Const":
+                    var constObj = new ME3Const(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = constObj;
+                    return constObj.Deserialize();
+
+                case "State":
+                    var stateObj = new ME3State(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = stateObj;
+                    return stateObj.Deserialize();
 
                 case "ArrayProperty":
                     var arrayProp = new ME3ArrayProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
@@ -297,7 +312,7 @@ namespace ME3Data.FileFormats.PCC
             _unkn4 = header.ReadUInt32(); // Seems to be the same for all files.
             _unkn5 = header.ReadUInt32(); // Same as above, UnHood possibly refers to this as package flags, old remnants?
 
-            _compressionFlag = header.ReadUInt32();
+            _compressionFlag = (FileCompressionFlags)header.ReadUInt32();
             _chunkCount = header.ReadUInt32();
             // TODO: support compressed files..
 

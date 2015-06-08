@@ -19,6 +19,11 @@ namespace ME3Data.DataTypes.ScriptTypes
         // Network
         public UInt16 ReplicateOffset;
 
+        public String UnkNameRef;
+
+        private NameReference _UnkNameRef;
+        private Int32 _Unk2;
+
         public ME3Property(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
             : base(data, exp, pcc)
         {
@@ -36,6 +41,11 @@ namespace ME3Data.DataTypes.ScriptTypes
             PropertyFlags = (PropertyFlags)Data.ReadUInt64();
             if (PropertyFlags.HasFlag(PropertyFlags.Net))
                 ReplicateOffset = Data.ReadUInt16();
+
+            _UnkNameRef = Data.ReadNameRef();
+            UnkNameRef = PCC.GetName(_UnkNameRef);
+
+            _Unk2 = Data.ReadInt32();
 
             return result;
         }

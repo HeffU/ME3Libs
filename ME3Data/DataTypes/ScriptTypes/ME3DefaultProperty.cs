@@ -140,7 +140,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public override bool Deserialize()
         {
-            Value = Data.ReadString();
+            Value = PCC.GetName(Data.ReadNameRef());
             return true;
         }
     }

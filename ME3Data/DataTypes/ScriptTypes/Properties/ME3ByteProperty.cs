@@ -10,7 +10,13 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
 {
     public class ME3ByteProperty : ME3Property
     {
+        /// <summary>
+        /// The enum type for this variable.
+        /// Only valid is IsEnum is true.
+        /// </summary>
         public ME3Enum Enum;
+
+        public bool IsEnum;
 
         private Int32 _EnumIndex;
 
@@ -36,11 +42,10 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             var entry = PCC.GetObjectEntry(_EnumIndex);
             if (entry != null)
             {
-                Enum = PCC.GetObjectEntry(_EnumIndex).Object as ME3Enum;
+                Enum = entry.Object as ME3Enum;
             }
 
-            if (Enum == null)
-                return false;
+            IsEnum = Enum == null ? false : true;
 
             return result;
         }

@@ -12,7 +12,8 @@ namespace Tests
         [TestMethod]
         public void TestLoadUncompressed()
         {
-            var path = @"G:\Code\ME3\temp\test.pcc";
+            var path = @"G:\Code\ME3\temp\Core.pcc";
+            //var path = @"G:\Code\ME3\temp\test.pcc";
             var stream = new FileStream(path, FileMode.Open);
             var pcc = new PCCFile(new PCCStreamReader(stream));
 

@@ -25,6 +25,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             var nameCount = Data.ReadInt32();
             _NameRefs = new List<NameReference>(nameCount);
+            Names = new List<String>();
             for (int n = 0; n < nameCount; n++)
             {
                 _NameRefs.Add(Data.ReadNameRef());

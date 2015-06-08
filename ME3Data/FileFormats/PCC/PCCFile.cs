@@ -165,6 +165,36 @@ namespace ME3Data.FileFormats.PCC
                     entry.Object = deleProp;
                     return deleProp.Deserialize();
 
+                case "FixedArrayProperty":
+                    var fixedProp = new ME3FixedArrayProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = fixedProp;
+                    return fixedProp.Deserialize();
+
+                case "FloatProperty":
+                    var floatProp = new ME3FloatProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = floatProp;
+                    return floatProp.Deserialize();
+
+                case "InterfaceProperty":
+                    var interfaceProp = new ME3InterfaceProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = interfaceProp;
+                    return interfaceProp.Deserialize();
+
+                case "NameProperty":
+                    var nameProp = new ME3NameProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = nameProp;
+                    return nameProp.Deserialize();
+
+                case "StrProperty":
+                    var strProp = new ME3StrProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = strProp;
+                    return strProp.Deserialize();
+
+                case "StructProperty":
+                    var structProp = new ME3StructProperty(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = structProp;
+                    return structProp.Deserialize();
+
                 default :
                     var obj = new ME3Object(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
                     entry.Object = obj;

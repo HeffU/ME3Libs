@@ -48,6 +48,7 @@
     <Compile Include="DataTypes\ScriptTypes\ME3Enum.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Field.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Function.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3InterfaceProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Object.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3Property.cs" />
     <Compile Include="DataTypes\ScriptTypes\ME3ScriptStruct.cs" />
@@ -59,8 +60,13 @@
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3ClassProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3ComponentProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3DelegateProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3FixedArrayProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3FloatProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3IntProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3NameProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3ObjectProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3StrProperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3StructPRoperty.cs" />
     <Compile Include="FileFormats\PCC\ExportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\ImportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\PCCFile.cs" />

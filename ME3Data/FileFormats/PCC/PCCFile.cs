@@ -84,12 +84,37 @@ namespace ME3Data.FileFormats.PCC
 
             foreach (ExportTableEntry export in Exports)
             {
-                export.Object = new ME3Object(Data.GetReader(export.FileOffset, export.Size), export, this);
-                if (!export.Object.Deserialize())
+                if (!DeserializeExportObject(export))
                     return false;
             }
 
             return true;
+        }
+
+        private bool DeserializeExportObject(ExportTableEntry entry)
+        {
+            switch (entry.ClassName)
+            {
+                case "Class":
+                    var classObj = new ME3Class(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = classObj;
+                    return classObj.Deserialize();
+
+                case "Function":
+                    var funcObj = new ME3Function(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = funcObj;
+                    return funcObj.Deserialize();
+
+                case "ScriptStruct":
+                    var scriptstructObj = new ME3ScriptStruct(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = scriptstructObj;
+                    return scriptstructObj.Deserialize();
+
+                default :
+                    var obj = new ME3Object(Data.GetReader(entry.FileOffset, entry.Size), entry, this);
+                    entry.Object = obj;
+                    return obj.Deserialize();
+            }
         }
 
         public ExportTableEntry GetExportByName(String name)

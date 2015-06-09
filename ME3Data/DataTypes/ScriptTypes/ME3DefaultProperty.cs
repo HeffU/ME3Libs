@@ -21,23 +21,24 @@ namespace ME3Data.DataTypes.ScriptTypes
         DelegateProperty = 8,
         StructProperty = 9,
         ArrayProperty = 10,
+        InterfaceProperty = 11,
 
         // Built-in struct properties:
-        Vector = 11,
-        Color = 12,
-        LinearColor = 13,
-        TwoVectors = 14,
-        Vector4 = 15,
-        Vector2D = 16,
-        Rotator = 17,
-        Guid = 18,
-        Sphere = 19,
-        Plane = 20,
-        Scale = 21,
-        Box = 22,
-        Quat = 23,
-        Matrix = 24,
-        IntPoint = 25
+        Vector = InterfaceProperty + 1,
+        Color = Vector + 1,
+        LinearColor = Vector + 2,
+        TwoVectors = Vector + 3,
+        Vector4 = Vector + 4,
+        Vector2D = Vector + 5,
+        Rotator = Vector + 6,
+        Guid = Vector + 7,
+        Sphere = Vector + 8,
+        Plane = Vector + 9,
+        Scale = Vector + 10,
+        Box = Vector + 11,
+        Quat = Vector + 12,
+        Matrix = Vector + 13,
+        IntPoint = Vector + 14
     }
 
     public abstract class DefaultPropertyValue
@@ -188,6 +189,21 @@ namespace ME3Data.DataTypes.ScriptTypes
         }
     }
 
+    public class InterfacePropertyValue : DefaultPropertyValue
+    {
+        public ME3Object Interface { get { return PCC.GetExportObject(Index); } }
+        public Int32 Index;
+
+        public InterfacePropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 4) { }
+
+        public override bool Deserialize()
+        {
+            Index = Data.ReadIndex();
+            return true;
+        }
+    }
+
     public class DelegatePropertyValue : DefaultPropertyValue
     {
         public Int32 OuterIndex; // Object that contains the assigned delegate
@@ -254,6 +270,7 @@ namespace ME3Data.DataTypes.ScriptTypes
     public class ME3DefaultProperty
     {
         public String Name;
+        public String SecondaryName;
         public String TypeName;
         public PropertyType Type;
 
@@ -284,8 +301,16 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase) || Name == String.Empty)
                 return false;
 
-            if (NameRef.ModNumber != 0) // Some weird inner name
-                Data.ReadInt32();       // TODO: figure this out!
+            if (NameRef.ModNumber > 32) // Some weird inner name
+            {                           // TODO: figure this out!
+                NameReference secondary;
+                secondary.Index = NameRef.ModNumber;
+                secondary.ModNumber = Data.ReadInt32();
+                SecondaryName = PCC.GetName(secondary);
+            } else if (NameRef.ModNumber > 0)
+            {
+                Name = Name + "_" + NameRef.ModNumber;
+            }
 
             TypeNameRef = Data.ReadNameRef();
             if (TypeNameRef.ModNumber != 0) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?
@@ -293,11 +318,15 @@ namespace ME3Data.DataTypes.ScriptTypes
                 Data.ReadInt32();
                 TypeName = PCC.Names[TypeNameRef.ModNumber];
                 var pTypeName = PCC.GetName(Data.ReadNameRef());
+                if (String.Equals(TypeName, "None", StringComparison.OrdinalIgnoreCase))
+                    return false; //TODO: Sort this arcane shit out.
                 Type = (PropertyType)Enum.Parse(typeof(PropertyType), pTypeName);
             }
             else
             {
                 TypeName = PCC.GetName(TypeNameRef);
+                if (TypeName == String.Empty)
+                    return false;
                 Type = (PropertyType)Enum.Parse(typeof(PropertyType), TypeName);
             }
 
@@ -359,6 +388,10 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.ObjectProperty:
                     value = new ObjectPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.InterfaceProperty:
+                    value = new InterfacePropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.DelegateProperty:

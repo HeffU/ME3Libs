@@ -13,6 +13,11 @@ namespace ME3Data.FileFormats.PCC
     public class PCCFile
     {
         /// <summary>
+        /// The name of this file.
+        /// </summary>
+        public String Name;
+
+        /// <summary>
         /// List of all Export objects in this PCC.
         /// </summary>
         public List<ExportTableEntry> Exports { get; private set; }
@@ -30,7 +35,12 @@ namespace ME3Data.FileFormats.PCC
         /// <summary>
         /// File flags for this PCC.
         /// </summary>
-        private PackageFlags PackageFlags;
+        public PackageFlags PackageFlags;
+
+        /// <summary>
+        /// A list of all PCC files that this file depends on for its imports.
+        /// </summary>
+        public List<String> ImportPackages;
 
         public PCCStreamReader Data;
 
@@ -62,12 +72,16 @@ namespace ME3Data.FileFormats.PCC
         private FileCompressionFlags _compressionFlag;
         private UInt32 _chunkCount;
 
-        public PCCFile(PCCStreamReader data)
+        private List<PCCFile> _ImportPackages;
+
+        public PCCFile(PCCStreamReader data, String name)
         {
+            Name = name;
             Data = data;
             Exports = new List<ExportTableEntry>();
             Imports = new List<ImportTableEntry>();
             Names = new List<String>();
+            ImportPackages = new List<String>();
         }
 
         public bool Deserialize()
@@ -92,6 +106,11 @@ namespace ME3Data.FileFormats.PCC
                     return false;
             }
 
+            return true;
+        }
+
+        public bool ResolveLinks()
+        {
             foreach (ExportTableEntry export in Exports)
             {
                 if (!export.Object.ResolveLinks())
@@ -99,6 +118,17 @@ namespace ME3Data.FileFormats.PCC
             }
 
             return true;
+        }
+
+        public void LoadDependencies(List<PCCFile> packages)
+        {
+            _ImportPackages.AddRange(packages);
+            foreach (var import in Imports)
+            {
+                var package = packages.FirstOrDefault(p => p.Name == import.SourcePCCName);
+                if (package != null)
+                    import.LoadFromSource(package);
+            }
         }
 
         private bool DeserializeExportObject(ExportTableEntry entry)
@@ -219,7 +249,6 @@ namespace ME3Data.FileFormats.PCC
 
         public ExportTableEntry GetExportByName(String name)
         {
-
             return Exports.FirstOrDefault(x => String.Equals(x.ObjectName, name, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -342,6 +371,8 @@ namespace ME3Data.FileFormats.PCC
                     return false;
 
                 Imports.Add(import);
+                if (!ImportPackages.Contains(import.SourcePCCName))
+                    ImportPackages.Add(import.SourcePCCName);
             }
 
             return true;

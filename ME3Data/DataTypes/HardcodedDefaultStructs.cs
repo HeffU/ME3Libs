@@ -367,4 +367,58 @@ namespace ME3Data.DataTypes
             return true;
         }
     }
+
+    /// -----------------------------
+    ///         BIOWARE STUFF
+    /// -----------------------------
+
+    public class RwVector3PropertyValue : DefaultPropertyValue
+    {
+        public FloatPropertyValue X;
+        public FloatPropertyValue Y;
+        public FloatPropertyValue Z;
+
+        public RwVector3PropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 12) { }
+
+        public override bool Deserialize()
+        {
+            X = new FloatPropertyValue(Data, PCC);
+            if (!X.Deserialize())
+                return false;
+            Y = new FloatPropertyValue(Data, PCC);
+            if (!Y.Deserialize())
+                return false;
+            Z = new FloatPropertyValue(Data, PCC);
+            if (!Z.Deserialize())
+                return false;
+
+            return true;
+        }
+    }
+
+    public class BioRwBoxPropertyValue : DefaultPropertyValue
+    {
+        public RwVector3PropertyValue Min; // TODO: figure out if this is really the correct syntax
+        public RwVector3PropertyValue Max; // data seemed to match with the BoxProprtyValue but who knows.
+        public BytePropertyValue IsValid;
+
+        public BioRwBoxPropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 25) { }
+
+        public override bool Deserialize()
+        {
+            Min = new RwVector3PropertyValue(Data, PCC);
+            if (!Min.Deserialize())
+                return false;
+            Max = new RwVector3PropertyValue(Data, PCC);
+            if (!Max.Deserialize())
+                return false;
+            IsValid = new BytePropertyValue(Data, PCC);
+            if (!IsValid.Deserialize())
+                return false;
+
+            return true;
+        }
+    }
 }

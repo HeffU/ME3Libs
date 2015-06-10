@@ -43,7 +43,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                 ReplicateOffset = Data.ReadUInt16();
 
             _UnkNameRef = Data.ReadNameRef();
-            UnkNameRef = PCC.GetName(_UnkNameRef);
+            UnkNameRef = PCC.GetName(_UnkNameRef); //associated with name properties?
 
             _Unk2 = Data.ReadInt32();
 

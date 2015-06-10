@@ -38,7 +38,12 @@ namespace ME3Data.DataTypes.ScriptTypes
         Box = Vector + 11,
         Quat = Vector + 12,
         Matrix = Vector + 13,
-        IntPoint = Vector + 14
+        IntPoint = Vector + 14,
+
+        // Bioware-specific:
+        BioRwBox = IntPoint + 1,
+        RwVector3 = BioRwBox + 1,
+        BioMask4Property = BioRwBox + 2,
     }
 
     public abstract class DefaultPropertyValue
@@ -57,6 +62,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public abstract bool Deserialize();
     }
 
+    #region Unreal Properties
     public class BoolPropertyValue : DefaultPropertyValue
     {
         public bool Value;
@@ -266,6 +272,25 @@ namespace ME3Data.DataTypes.ScriptTypes
             return true;
         }
     }
+#endregion
+
+    #region BioWare Properties
+
+    public class BioMask4PropertyValue : DefaultPropertyValue
+    {
+        public byte Mask;
+
+        public BioMask4PropertyValue(ObjectReader data, PCCFile pcc)
+            : base(data, pcc, 1) { }
+
+        public override bool Deserialize()
+        {
+            Mask = Data.ReadByte();
+            return true;
+        }
+    }
+
+    #endregion
 
     public class ME3DefaultProperty
     {
@@ -296,8 +321,9 @@ namespace ME3Data.DataTypes.ScriptTypes
         public bool Deserialize()
         {
             NameRef = Data.ReadNameRef();
-
             Name = PCC.GetName(NameRef);
+            if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase))
+                return false;
 
             if (NameRef.ModNumber > 32) // Some weird inner name
             {                           // TODO: figure this out!
@@ -310,7 +336,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                 Name = Name + "_" + NameRef.ModNumber;
             }
 
-            if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase) || Name == String.Empty)
+            if (Name == String.Empty && SecondaryName == String.Empty) //(SecondaryName == String.Empty || SecondaryName == null))
                 return false;
 
             TypeNameRef = Data.ReadNameRef();
@@ -332,19 +358,6 @@ namespace ME3Data.DataTypes.ScriptTypes
             }
 
             Size = Data.ReadUInt32();
-            switch (Type) // Adjust size for certain types:
-            {
-                case PropertyType.BoolProperty:
-                    Size += 1;
-                    break;
-                case PropertyType.ByteProperty:
-                    Size += 8;
-                    break;
-                case PropertyType.StructProperty:
-                    Size += 8;
-                    break;
-            }
-
             ArrayIndex = Data.ReadUInt32();
 
             return DeserializeValue(Type, out Value, Size);
@@ -361,7 +374,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.ByteProperty:
                     var enumName = PCC.GetName(Data.ReadNameRef());
-                    if (size == 16) // if it's an enum-based byte value
+                    if (size == 8) // if it's an enum-based byte value
                         value = new EnumPropertyValue(Data, PCC, size, enumName);
                     else
                         value = new BytePropertyValue(Data, PCC);
@@ -412,6 +425,14 @@ namespace ME3Data.DataTypes.ScriptTypes
                 case PropertyType.ArrayProperty:
                     value = new ArrayPropertyValue(Data, PCC, size);
                     return value.Deserialize();
+
+                #region BioWare
+
+                case PropertyType.BioMask4Property:
+                    value = new BioMask4PropertyValue(Data, PCC);
+                    return value.Deserialize();
+                #endregion
+
 
                 #region Hardcoded Structs
 
@@ -473,6 +494,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.IntPoint:
                     value = new IntPointPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.BioRwBox:
+                    value = new BioRwBoxPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwVector3:
+                    value = new RwVector3PropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 #endregion

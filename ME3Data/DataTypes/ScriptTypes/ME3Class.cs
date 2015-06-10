@@ -77,8 +77,8 @@ namespace ME3Data.DataTypes.ScriptTypes
                 _Components.Add(componentRef);
             }
 
-            DLLBindIndex = Data.ReadInt32();
-            DefaultPropertyIndex = Data.ReadInt32();
+            DLLBindIndex = Data.ReadInt32(); 
+            DefaultPropertyIndex = Data.ReadInt32(); // name index??
 
             _unkn1 = Data.ReadInt32();
             _unkn2 = Data.ReadInt32();

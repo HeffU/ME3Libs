@@ -141,7 +141,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public override bool Deserialize()
         {
-            Value = PCC.GetName(Data.ReadNameRef());
+            Value = Data.ReadString();
             return true;
         }
     }
@@ -213,7 +213,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public DelegatePropertyValue(ObjectReader data, PCCFile pcc, String name)
             : base(data, pcc, 12) 
         {
-            DelegateName = name.Substring(2, name.Length - 12);
+            DelegateName = name;//name.Substring(2, name.Length - 12);
         }
 
         public override bool Deserialize()
@@ -298,8 +298,6 @@ namespace ME3Data.DataTypes.ScriptTypes
             NameRef = Data.ReadNameRef();
 
             Name = PCC.GetName(NameRef);
-            if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase) || Name == String.Empty)
-                return false;
 
             if (NameRef.ModNumber > 32) // Some weird inner name
             {                           // TODO: figure this out!
@@ -311,6 +309,9 @@ namespace ME3Data.DataTypes.ScriptTypes
             {
                 Name = Name + "_" + NameRef.ModNumber;
             }
+
+            if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase) || Name == String.Empty)
+                return false;
 
             TypeNameRef = Data.ReadNameRef();
             if (TypeNameRef.ModNumber != 0) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?

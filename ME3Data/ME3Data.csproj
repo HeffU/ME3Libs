@@ -40,9 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\DataStructs.cs" />
-    <Compile Include="DataTypes\HardcodedDefaultStructs.cs" />
     <Compile Include="DataTypes\ME3Flags.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\ArrayPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\BioWareValues\BioMask4PropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\BoolPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\BytePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\DelegatePropertyValue.cs" />
@@ -52,6 +52,23 @@
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\IntPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\NamePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\ObjectPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\BioRwBoxPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\RwVector3PropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BoxPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\ColorPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\GUIDPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\IntPointPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\LinearColorPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\MatrixPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\PlanePropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\QuatPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\RotatorPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\ScalePropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\SpherePropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\TwoVectorPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\Vector2DPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\Vector4PropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\VectorPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\StringRefPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\StrPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\StructPropertyValue.cs" />
@@ -88,9 +105,7 @@
     <Compile Include="Utility\ObjectReader.cs" />
     <Compile Include="Utility\PCCStreamReader.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,4 +1,7 @@
 ﻿using ME3Data.DataTypes.ScriptTypes.DefaultProperties;
+using ME3Data.DataTypes.ScriptTypes.DefaultProperties.BioWareValues;
+using ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs;
+using ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs.BioWareStructValues;
 using ME3Data.FileFormats.PCC;
 using ME3Data.Utility;
 using System;
@@ -62,24 +65,6 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public abstract bool Deserialize();
     }
-
-    #region BioWare Properties
-
-    public class BioMask4PropertyValue : DefaultPropertyValue
-    {
-        public byte Mask;
-
-        public BioMask4PropertyValue(ObjectReader data, PCCFile pcc)
-            : base(data, pcc, 1) { }
-
-        public override bool Deserialize()
-        {
-            Mask = Data.ReadByte();
-            return true;
-        }
-    }
-
-    #endregion
 
     public class ME3DefaultProperty
     {
@@ -238,7 +223,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                     return value.Deserialize();
 
                 case PropertyType.TwoVectors:
-                    value = new VectorPairPropertyValue(Data, PCC);
+                    value = new TwoVectorsPropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 case PropertyType.Vector4:

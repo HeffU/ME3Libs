@@ -2,6 +2,7 @@
 using ME3Data.DataTypes.ScriptTypes.DefaultProperties.BioWareValues;
 using ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs;
 using ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs.BioWareStructValues;
+using ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs.UE3StructValues;
 using ME3Data.FileFormats.PCC;
 using ME3Data.Utility;
 using System;
@@ -44,8 +45,13 @@ namespace ME3Data.DataTypes.ScriptTypes
         Matrix = Vector + 13,
         IntPoint = Vector + 14,
 
+        // UE3 internals:
+        ActorReference = IntPoint + 1,
+        PolyReference = ActorReference + 1,
+        AimTransform = ActorReference + 2,
+
         // Bioware-specific:
-        BioRwBox = IntPoint + 1,
+        BioRwBox = AimTransform + 1,
         BioMask4Property = BioRwBox + 1,
         RwVector2 = BioRwBox + 2,
         RwVector3 = BioRwBox + 3,
@@ -215,6 +221,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 #region Hardcoded Structs
 
+                #region Standard
                 case PropertyType.Vector:
                     value = new VectorPropertyValue(Data, PCC);
                     return value.Deserialize();
@@ -274,7 +281,9 @@ namespace ME3Data.DataTypes.ScriptTypes
                 case PropertyType.IntPoint:
                     value = new IntPointPropertyValue(Data, PCC);
                     return value.Deserialize();
+                #endregion
 
+                #region BioWare
                 case PropertyType.BioRwBox:
                     value = new BioRwBoxPropertyValue(Data, PCC);
                     return value.Deserialize();
@@ -302,6 +311,24 @@ namespace ME3Data.DataTypes.ScriptTypes
                 case PropertyType.RwMatrix44:
                     value = new RwMatrix44PropertyValue(Data, PCC);
                     return value.Deserialize();
+
+                #endregion
+
+                #region UE3Internals
+                
+                case PropertyType.ActorReference:
+                    value = new ActorReferencePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.PolyReference:
+                    value = new PolyReferencePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.AimTransform:
+                    value = new AimTransformPropertyValue(Data, PCC);
+                    return value.Deserialize();
+                
+                #endregion
 
                 #endregion
 

@@ -71,6 +71,9 @@
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\ScalePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\SpherePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\TwoVectorPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\ActorReferencePropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\AimTransformPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\PolyReferencePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\Vector2DPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\Vector4PropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\VectorPropertyValue.cs" />

@@ -14,7 +14,7 @@ namespace ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs.BioW
         public FloatPropertyValue Y;
 
         public RwVector2PropertyValue(ObjectReader data, PCCFile pcc)
-            : base(data, pcc, 12) { }
+            : base(data, pcc, 8) { }
 
         public override bool Deserialize()
         {

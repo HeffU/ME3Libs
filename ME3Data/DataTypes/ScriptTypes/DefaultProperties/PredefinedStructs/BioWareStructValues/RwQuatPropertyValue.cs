@@ -13,7 +13,7 @@ namespace ME3Data.DataTypes.ScriptTypes.DefaultProperties.PredefinedStructs.BioW
         public RwVector4PropertyValue Vector4;
 
         public RwQuatPropertyValue(ObjectReader data, PCCFile pcc)
-            : base(data, pcc, 12) { }
+            : base(data, pcc, 16) { }
 
         public override bool Deserialize()
         {

@@ -50,6 +50,9 @@ namespace ME3Data.DataTypes.ScriptTypes
         RwVector2 = BioRwBox + 2,
         RwVector3 = BioRwBox + 3,
         RwVector4 = BioRwBox + 4,
+        RwPlane = BioRwBox + 5,
+        RwQuat = BioRwBox + 6,
+        RwMatrix44 = BioRwBox + 7,
     }
 
     public abstract class DefaultPropertyValue
@@ -286,6 +289,18 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.RwVector4:
                     value = new RwVector4PropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwPlane:
+                    value = new RwPlanePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwQuat:
+                    value = new RwQuatPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwMatrix44:
+                    value = new RwMatrix44PropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 #endregion

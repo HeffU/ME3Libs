@@ -53,7 +53,9 @@
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\NamePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\ObjectPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\BioRwBoxPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\RwVector2PropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\RwVector3PropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BioWareStructValues\RwVector4PropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\BoxPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\ColorPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\GUIDPropertyValue.cs" />

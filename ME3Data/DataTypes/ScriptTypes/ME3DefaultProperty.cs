@@ -46,8 +46,10 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         // Bioware-specific:
         BioRwBox = IntPoint + 1,
-        RwVector3 = BioRwBox + 1,
-        BioMask4Property = BioRwBox + 2,
+        BioMask4Property = BioRwBox + 1,
+        RwVector2 = BioRwBox + 2,
+        RwVector3 = BioRwBox + 3,
+        RwVector4 = BioRwBox + 4,
     }
 
     public abstract class DefaultPropertyValue
@@ -276,6 +278,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.RwVector3:
                     value = new RwVector3PropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwVector2:
+                    value = new RwVector2PropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.RwVector4:
+                    value = new RwVector4PropertyValue(Data, PCC);
                     return value.Deserialize();
 
                 #endregion

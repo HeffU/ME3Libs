@@ -73,7 +73,9 @@
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\TwoVectorPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\ActorReferencePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\AimTransformPropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\CoverInfoPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\CoverReferencePropertyValue.cs" />
+    <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\CoverSlotPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\NavReferencePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\UE3StructValues\PolyReferencePropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\PredefinedStructs\Vector2DPropertyValue.cs" />

@@ -51,9 +51,11 @@ namespace ME3Data.DataTypes.ScriptTypes
         AimTransform = ActorReference + 2,
         NavReference = ActorReference + 3,
         CoverReference = ActorReference + 4,
+        CoverInfo = ActorReference + 5,
+        CoverSlot = ActorReference + 6,
 
         // Bioware-specific:
-        BioRwBox = CoverReference + 1,
+        BioRwBox = CoverSlot + 1,
         BioMask4Property = BioRwBox + 1,
         RwVector2 = BioRwBox + 2,
         RwVector3 = BioRwBox + 3,
@@ -336,6 +338,14 @@ namespace ME3Data.DataTypes.ScriptTypes
 
                 case PropertyType.CoverReference:
                     value = new CoverReferencePropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.CoverInfo:
+                    value = new CoverInfoPropertyValue(Data, PCC);
+                    return value.Deserialize();
+
+                case PropertyType.CoverSlot:
+                    value = new CoverSlotPropertyValue(Data, PCC, size);
                     return value.Deserialize();
                 
                 #endregion

@@ -28,7 +28,6 @@ namespace ME3Data.FileFormats.PCC
 
         /// <summary>
         /// The name of this object's outer object.
-        /// Only valid if object is an export or the import's PCC file has been loaded beforehand.
         /// </summary>
         public String OuterName;
 
@@ -52,11 +51,26 @@ namespace ME3Data.FileFormats.PCC
 
 
         protected ObjectReader Data;
+        protected Int32 _OuterIndex;
 
         public ObjectTableEntry(PCCFile current, ObjectReader data)
         {
             CurrentPCC = current;
             Data = data;
+        }
+
+        public String GetOuterTreeString()
+        {
+            var outer = CurrentPCC.GetObjectEntry(_OuterIndex);
+            if (outer == null)
+                return String.Empty;
+            String str = outer.ObjectName;
+            while (outer._OuterIndex != 0)
+            {
+                outer = CurrentPCC.GetObjectEntry(outer._OuterIndex);
+                str = outer.ObjectName + "." + str;
+            }
+            return str;
         }
     }
 }

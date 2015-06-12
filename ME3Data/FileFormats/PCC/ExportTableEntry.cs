@@ -44,7 +44,6 @@ namespace ME3Data.FileFormats.PCC
 
         private Int32 _ClassIndex;
         private Int32 _SuperIndex;
-        private Int32 _OuterIntex;
         private NameReference _ObjectNameRef;
         private Int32 _ArchetypeIndex;
 
@@ -62,7 +61,9 @@ namespace ME3Data.FileFormats.PCC
             _ClassIndex = Data.ReadInt32();
             ClassName = CurrentPCC.GetClassName(_ClassIndex);
             _SuperIndex = Data.ReadInt32();
-            _OuterIntex = Data.ReadInt32();
+            _OuterIndex = Data.ReadInt32();
+            // do in resolve links?
+            //OuterName = CurrentPCC.GetObjectEntry(_OuterIntex).ObjectName;
             _ObjectNameRef = Data.ReadNameRef();
             ObjectName = CurrentPCC.GetName(_ObjectNameRef);
             _ArchetypeIndex = Data.ReadInt32();

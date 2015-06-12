@@ -27,8 +27,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int32 DefaultPropertyIndex;
 
         public Int32 FunctionRefCount;
-        //public List<ME3Function> FunctionRefs;
-        public List<String> FunctionRefs;
+        public List<ME3Function> FunctionRefs;
+        //public List<String> FunctionRefs;
 
         private Int32 _OuterClassIndex;
 
@@ -78,11 +78,11 @@ namespace ME3Data.DataTypes.ScriptTypes
             }
 
             DLLBindIndex = Data.ReadInt32(); 
-            DefaultPropertyIndex = Data.ReadInt32(); // name index??
 
             _unkn1 = Data.ReadInt32();
             _unkn2 = Data.ReadInt32();
             _unkn3 = Data.ReadInt32();
+            DefaultPropertyIndex = Data.ReadInt32();
 
             FunctionRefCount = Data.ReadInt32();
             for (int i = 0; i < FunctionRefCount; i++)
@@ -101,7 +101,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             ImplementedInterfaces = new List<ME3Class>();
             Components = new List<ME3Object>();
-            FunctionRefs = new List<String>();
+            FunctionRefs = new List<ME3Function>();
 
             foreach (var interfaceRef in _ImplInterfaces)
             {
@@ -119,9 +119,9 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             foreach (var funcRef in _FunctionRefs)
             {
-                string name = PCC.GetObjectEntry(funcRef).ObjectName;
-                FunctionRefs.Add(name);
-                // TODO: handle this better, by-name lookup?
+                var entry = PCC.GetObjectEntry(funcRef);
+                ME3Function func = entry.Object as ME3Function;
+                FunctionRefs.Add(func);
             }
 
             return result;

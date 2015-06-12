@@ -39,7 +39,6 @@ namespace ME3Data.FileFormats.PCC
 
         private NameReference _PCCNameRef;
         private NameReference _ClassNameRef;
-        private Int32 _OuterIndex;
         private NameReference _ObjectNameRef;
 
         public ImportTableEntry(PCCFile current, ObjectReader data)
@@ -57,6 +56,8 @@ namespace ME3Data.FileFormats.PCC
             ClassName = CurrentPCC.GetName(_ClassNameRef);
 
             _OuterIndex = Data.ReadInt32();
+            // Do in links or loadfromsource:
+            //OuterName = CurrentPCC.GetObjectEntry(_OuterIndex).ObjectName;
 
             _ObjectNameRef = Data.ReadNameRef();
             ObjectName = CurrentPCC.GetName(_ObjectNameRef);
@@ -68,18 +69,16 @@ namespace ME3Data.FileFormats.PCC
         {
             SourcePCC = source;
 
-            SourceEntry = SourcePCC.GetExportByName(ObjectName);
-            if (SourceEntry == null)
-                return false;
+            var entry = PCCFile.GetExportFromImport(this);
+            if (entry == null)
+                return true; // TODO, this should throw an error.
+            SourceEntry = entry as ExportTableEntry;
 
             Object = SourceEntry.Object;
             ObjectType = SourceEntry.ObjectType;
 
-            var OuterEntry = SourcePCC.Exports[_OuterIndex];
-            if (OuterEntry == null)
-                return false;
-            OuterObject = OuterEntry.Object;
-            OuterName = OuterEntry.ObjectName;
+            OuterObject = entry.OuterObject;
+            OuterName = entry.OuterName;
 
             FullyLoaded = true;
 

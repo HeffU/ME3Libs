@@ -82,6 +82,7 @@ namespace ME3Data.FileFormats.PCC
             Imports = new List<ImportTableEntry>();
             Names = new List<String>();
             ImportPackages = new List<String>();
+            _ImportPackages = new List<PCCFile>();
         }
 
         public bool Deserialize()
@@ -250,6 +251,38 @@ namespace ME3Data.FileFormats.PCC
         public ExportTableEntry GetExportByName(String name)
         {
             return Exports.FirstOrDefault(x => String.Equals(x.ObjectName, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static ExportTableEntry GetExportFromImport(ImportTableEntry entry)
+        {
+            if (entry.ClassName == "Package")
+            {
+                return new ExportTableEntry(null, null);
+                // TODO: this imports the whole package?
+            }
+            var OuterTree = entry.GetOuterTreeString().Split(new char[] {'.'}, 2, StringSplitOptions.RemoveEmptyEntries);
+            if (OuterTree[0] == entry.CurrentPCC.Name)
+            {
+                return new ExportTableEntry(null, null);
+                // TODO: this means its a fully native object, we should create those for all types required by ME3.
+            }
+
+            var objects = entry.SourcePCC.Exports.Where(x => // TODO: can probably be much quicker, perhaps by outer tree traversal?
+                String.Equals(x.ObjectName, entry.ObjectName, StringComparison.OrdinalIgnoreCase) &&
+                String.Equals(x.ClassName, entry.ClassName, StringComparison.OrdinalIgnoreCase) &&
+                (OuterTree.Length == 2 
+                    ? String.Equals(x.GetOuterTreeString(), OuterTree[1], StringComparison.OrdinalIgnoreCase) 
+                    : x.GetOuterTreeString() == String.Empty));
+            if (objects.Count() != 1)
+            {
+                if (entry.SourcePCC.Name == "Core")
+                {
+                    return new ExportTableEntry(null, null);
+                    // TODO: this means its a fully native object, we should create those for all types required by ME3.
+                }
+                return null; // This should not happen unless we have a faulty import.
+            }
+            return objects.First();
         }
 
         public String GetName(NameReference reference)

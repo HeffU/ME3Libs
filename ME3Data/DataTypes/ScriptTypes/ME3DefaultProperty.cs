@@ -131,7 +131,8 @@ namespace ME3Data.DataTypes.ScriptTypes
             TypeNameRef = Data.ReadNameRef();
             if (TypeNameRef.ModNumber != 0) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?
             {
-                Data.ReadInt32();
+                if (Data.ReadInt32() != 0)
+                    return false;
                 TypeName = PCC.Names[TypeNameRef.ModNumber];
                 var pTypeName = PCC.GetName(Data.ReadNameRef());
                 if (String.Equals(TypeName, "None", StringComparison.OrdinalIgnoreCase))

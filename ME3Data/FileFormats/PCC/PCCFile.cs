@@ -74,6 +74,27 @@ namespace ME3Data.FileFormats.PCC
 
         private List<PCCFile> _ImportPackages;
 
+        private static List<String> _NativeOnlyPackages = new List<String>
+        {
+            "EngineMaterials",
+            "EngineResources",
+            "SFXWwise_Init",
+	        "Wwise_Generic_Foley_Procedural",
+            "BioVFX_C_Blood",
+            "Textures",
+            "BioVFX_C_Stealth",
+            "Materials",
+            "BioVFX_Env_Hologram",
+            "Explosion",
+            "glow",
+            "sparks",
+            "Planes",
+            "Cube_Maps",
+            "Distortion",
+            "Fractals",
+            "Normals",
+        };
+
         public PCCFile(PCCStreamReader data, String name)
         {
             Name = name;
@@ -257,22 +278,32 @@ namespace ME3Data.FileFormats.PCC
         {
             if (entry.ClassName == "Package")
             {
+                //Console.WriteLine(entry.ObjectName + " : " + entry.SourcePCCName);
                 return new ExportTableEntry(null, null);
                 // TODO: this imports the whole package?
             }
             var OuterTree = entry.GetOuterTreeString().Split(new char[] {'.'}, 2, StringSplitOptions.RemoveEmptyEntries);
-            if (OuterTree[0] == entry.CurrentPCC.Name)
+            if (entry.SourcePCCName == entry.CurrentPCC.Name || OuterTree[0] != entry.SourcePCC.Name 
+                || _NativeOnlyPackages.Contains(OuterTree[0])) // looks like this probably wont be needed.
             {
+                Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
                 return new ExportTableEntry(null, null);
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.
             }
 
             var objects = entry.SourcePCC.Exports.Where(x => // TODO: can probably be much quicker, perhaps by outer tree traversal?
                 String.Equals(x.ObjectName, entry.ObjectName, StringComparison.OrdinalIgnoreCase) &&
-                String.Equals(x.ClassName, entry.ClassName, StringComparison.OrdinalIgnoreCase) &&
-                (OuterTree.Length == 2 
-                    ? String.Equals(x.GetOuterTreeString(), OuterTree[1], StringComparison.OrdinalIgnoreCase) 
-                    : x.GetOuterTreeString() == String.Empty));
+                String.Equals(x.ClassName, entry.ClassName, StringComparison.OrdinalIgnoreCase));
+            if (objects.Count() > 1)
+            {
+                if (OuterTree.Length == 2)
+                {
+                    objects = objects.Where(x => String.Equals(x.GetOuterTreeString(), OuterTree[1], StringComparison.OrdinalIgnoreCase));
+                } else
+                {
+                    objects = objects.Where(x => x.GetOuterTreeString() == String.Empty);
+                }
+            }
             if (objects.Count() != 1)
             {
                 if (entry.SourcePCC.Name == "Core")

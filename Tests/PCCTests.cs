@@ -36,9 +36,9 @@ namespace Tests
             SFXGamepcc.LoadDependencies(loaded);
             loaded.Add(SFXGamepcc);
 
-            var path = @"G:\Code\ME3\temp\test.pcc";
+            var path = @"G:\Code\ME3\temp\SFXWeapon_Pistol_Carnifex.pcc";
             var stream = new FileStream(path, FileMode.Open);
-            var pcc = new PCCFile(new PCCStreamReader(stream), "test");
+            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Pistol_Carnifex");
 
             Assert.IsTrue(pcc.Deserialize());
             var deps = pcc.ImportPackages;

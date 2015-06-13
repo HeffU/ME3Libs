@@ -318,8 +318,8 @@ namespace ME3Data.FileFormats.PCC
 
         public String GetName(NameReference reference)
         {
-            if (reference.Index == 0 && reference.ModNumber >= 0)
-                return String.Empty; // Error, weird mod number!
+            /*if (reference.Index == 0 && reference.ModNumber >= 0)
+                return String.Empty; // Error, weird mod number!*/
             return reference.Index >= 0 && reference.Index < Names.Count ? Names[reference.Index] : String.Empty;
         }
 

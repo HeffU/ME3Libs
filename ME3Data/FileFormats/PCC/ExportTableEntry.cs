@@ -66,7 +66,7 @@ namespace ME3Data.FileFormats.PCC
             //OuterName = CurrentPCC.GetObjectEntry(_OuterIntex).ObjectName;
             _ObjectNameRef = Data.ReadNameRef();
             ObjectName = CurrentPCC.GetName(_ObjectNameRef);
-            if (_ObjectNameRef.ModNumber > 0)
+            if (_ObjectNameRef.ModNumber > -1)
                 ObjectName += "_" + _ObjectNameRef.ModNumber;
             _ArchetypeIndex = Data.ReadInt32();
             ObjectFlags = (ObjectFlags)Data.ReadUInt64();

@@ -6,7 +6,9 @@ namespace ME3Data.DataTypes
     public struct NameReference
     {
         public Int32 Index;
-        public Int32 ModNumber;
+        public Int32 ModNumber; // -1 if it's not pointing to anything, // >= 0 if numeric
+                                // Default properties have their own standard, 0 <= numeric <= 0x1F(?) < secondaryName
+                                // Where secondaryName is a new namereference, unsure of purpose, usually components.
     }
 
     public struct FunctionMapEntry

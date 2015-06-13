@@ -114,36 +114,40 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase))
                 return false;
 
-            if (NameRef.ModNumber > 32) // Some weird inner name
-            {                           // TODO: figure this out!
-                NameReference secondary;
-                secondary.Index = NameRef.ModNumber;
-                secondary.ModNumber = Data.ReadInt32();
-                SecondaryName = PCC.GetName(secondary);
-            } else if (NameRef.ModNumber > 0)
+            if (NameRef.ModNumber > -1)
             {
-                Name = Name + "_" + NameRef.ModNumber;
+                if (NameRef.ModNumber > 0x1F)   // Some weird inner name
+                {                               // TODO: figure this out!
+                    NameReference secondary;
+                    secondary.Index = NameRef.ModNumber;
+                    secondary.ModNumber = Data.ReadInt32();
+                    SecondaryName = PCC.GetName(secondary);
+                }
+                else
+                {
+                    Name = Name + "_" + NameRef.ModNumber;
+                }
             }
 
-            if (Name == String.Empty && SecondaryName == String.Empty) //(SecondaryName == String.Empty || SecondaryName == null))
-                return false;
+            /*if (Name == String.Empty && SecondaryName == String.Empty) //(SecondaryName == String.Empty || SecondaryName == null))
+                return false;*/
 
             TypeNameRef = Data.ReadNameRef();
-            if (TypeNameRef.ModNumber != 0) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?
+            if (TypeNameRef.ModNumber > -1) // another weird thing, this type name something unknown, but possibly the modnumber represents component type?
             {
                 if (Data.ReadInt32() != 0)
                     return false;
-                TypeName = PCC.Names[TypeNameRef.ModNumber];
-                var pTypeName = PCC.GetName(Data.ReadNameRef());
+                TypeName = PCC.Names[TypeNameRef.ModNumber + 1]; // TODO: nonstandard, clean up.
                 if (String.Equals(TypeName, "None", StringComparison.OrdinalIgnoreCase))
                     return false; //TODO: Sort this arcane shit out.
+                var pTypeName = PCC.GetName(Data.ReadNameRef());
                 Type = (PropertyType)Enum.Parse(typeof(PropertyType), pTypeName);
             }
             else
             {
                 TypeName = PCC.GetName(TypeNameRef);
-                if (TypeName == String.Empty)
-                    return false;
+                /*if (TypeName == String.Empty)
+                    return false;*/
                 Type = (PropertyType)Enum.Parse(typeof(PropertyType), TypeName);
             }
 

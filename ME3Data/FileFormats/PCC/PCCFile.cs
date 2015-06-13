@@ -38,9 +38,14 @@ namespace ME3Data.FileFormats.PCC
         public PackageFlags PackageFlags;
 
         /// <summary>
-        /// A list of all PCC files that this file depends on for its imports.
+        /// A list of all PCC file names that this file depends on for its imports.
         /// </summary>
-        public List<String> ImportPackages;
+        public List<String> ImportPackageNames;
+
+        /// <summary>
+        /// A list of all import PCC files that have been loaded.
+        /// </summary>
+        public List<PCCFile> ImportPackages;
 
         public PCCStreamReader Data;
 
@@ -72,7 +77,6 @@ namespace ME3Data.FileFormats.PCC
         private FileCompressionFlags _compressionFlag;
         private UInt32 _chunkCount;
 
-        private List<PCCFile> _ImportPackages;
 
         private static List<String> _NativeOnlyPackages = new List<String>
         {
@@ -96,7 +100,9 @@ namespace ME3Data.FileFormats.PCC
             "BioVFX_Z_TEXTURES",
             "BioVFX_Z_MESHES",
             "BioVFX_Z_MATERIALS",
-            "BioVFX_C_Weapons"
+            "BioVFX_C_Weapons",
+            "Wwise_Weapons_Generic",
+            "Wwise_Weapons_Standard_LowAmmo"
         };
 
         private static List<String> _CoreObjectTypes = new List<String>
@@ -123,7 +129,11 @@ namespace ME3Data.FileFormats.PCC
             "State",
             "StringRefProperty",
             "StrProperty",
-            "StructProperty"
+            "StructProperty",
+
+            // These are from engine, probably ought to not be here.
+            "Level",
+            "StaticMesh"
         };
 
 
@@ -134,8 +144,8 @@ namespace ME3Data.FileFormats.PCC
             Exports = new List<ExportTableEntry>();
             Imports = new List<ImportTableEntry>();
             Names = new List<String>();
-            ImportPackages = new List<String>();
-            _ImportPackages = new List<PCCFile>();
+            ImportPackageNames = new List<String>();
+            ImportPackages = new List<PCCFile>();
         }
 
         public bool Deserialize()
@@ -145,7 +155,7 @@ namespace ME3Data.FileFormats.PCC
                 return false;
 
             // Unsure if import table is always after name table, make a more dynamic solution.
-            if (!DeserializeNames(Data.GetReader(_nameOffset, _importOffset - _nameOffset)))
+            if (!DeserializeNames())
                 return false;
 
             if (!DeserializeImports())
@@ -153,6 +163,8 @@ namespace ME3Data.FileFormats.PCC
 
             if (!DeserializeExports())
                 return false;
+
+            // TODO: handle extra name table.
 
             foreach (ExportTableEntry export in Exports)
             {
@@ -176,7 +188,7 @@ namespace ME3Data.FileFormats.PCC
 
         public void LoadDependencies(List<PCCFile> packages)
         {
-            _ImportPackages.AddRange(packages);
+            ImportPackages.AddRange(packages);
             foreach (var import in Imports)
             {
                 var package = packages.FirstOrDefault(p => p.Name == import.SourcePCCName);
@@ -325,7 +337,11 @@ namespace ME3Data.FileFormats.PCC
 
             if (entry.SourcePCCName != OuterTree[0])
             {
-                return null;// TODO: Get proper pcc here.
+                var realPCC = entry.CurrentPCC.ImportPackages.FirstOrDefault(x => x.Name == OuterTree[0]);
+                if (realPCC == null)
+                    return null; // Error, missing import?
+
+                entry.SourcePCC = realPCC;
             }
 
             var objects = entry.SourcePCC.Exports.Where(x => // TODO: can probably be much quicker, perhaps by outer tree traversal?
@@ -445,13 +461,20 @@ namespace ME3Data.FileFormats.PCC
             return true;
         }
 
-        private bool DeserializeNames(ObjectReader table)
+        private bool DeserializeNames()
         {
+            ObjectReader table;
+            Int32 size;
+            UInt32 offset = 0;
             for (int n = 0; n < _nameCount; n++)
             {
-                var name = table.ReadString();
-                // TODO: Add some sanity checking
-                Names.Add(name);
+                table = Data.GetReader(_nameOffset + offset, 4);
+                size = -table.ReadInt32(); // assuming unicode
+
+                table = Data.GetReader(_nameOffset + offset + 4, (UInt32)size * 2);
+                Names.Add(Encoding.Unicode.GetString(table.ReadRawData(size * 2)).Substring(0, size - 1));
+
+                offset += ((UInt32)size * 2) + 4;
             }
             return true;
         }
@@ -468,8 +491,8 @@ namespace ME3Data.FileFormats.PCC
                     return false;
 
                 Imports.Add(import);
-                if (!ImportPackages.Contains(import.SourcePCCName))
-                    ImportPackages.Add(import.SourcePCCName);
+                if (!ImportPackageNames.Contains(import.SourcePCCName))
+                    ImportPackageNames.Add(import.SourcePCCName);
             }
 
             return true;

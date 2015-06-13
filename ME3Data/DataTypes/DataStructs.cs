@@ -26,4 +26,11 @@ namespace ME3Data.DataTypes
         public NameReference NameRef;
         public Int32 ObjectIndex; // unknown?
     }
+
+    public struct LabelTableEntry
+    {
+        public NameReference NameRef;
+        public String Name;
+        public UInt32 Offset; // Relative to DataScript start (?)
+    }
 }

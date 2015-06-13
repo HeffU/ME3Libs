@@ -22,6 +22,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         // Script-related
         public Int32 ByteScriptSize;
+        public byte[] ByteScript;
         public Int32 DataScriptSize;
         public byte[] DataScript;
 
@@ -37,8 +38,12 @@ namespace ME3Data.DataTypes.ScriptTypes
             FirstChildIndex = Data.ReadIndex();
 
             ByteScriptSize = Data.ReadInt32();
+            ByteScript = new byte[ByteScriptSize];
             DataScriptSize = Data.ReadInt32();
             DataScript = Data.ReadRawData(DataScriptSize);
+
+            if (DataScriptSize > 0)
+                Array.Copy(DataScript, 0, ByteScript, ByteScriptSize - DataScriptSize, DataScriptSize);
 
             return result;
         }

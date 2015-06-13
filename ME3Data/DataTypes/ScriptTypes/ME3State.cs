@@ -14,11 +14,14 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int32 ProbeMask;
         public Int64 IgnoreMask;
 
+        // Relative to ByteScript start
         public Int16 LabelTableOffset;
         public StateFlags StateFlags;
 
         public Int32 FunctionMapCount;
         public List<ME3Function> FunctionMap;
+
+        public List<LabelTableEntry> LabelTable;
 
         private Int32 _unknown;
 
@@ -34,12 +37,33 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.Deserialize();
 
-            _unknown = Data.ReadInt32();
+            _unknown = Data.ReadInt32(); // Not always zero, looks like flags or mask?
 
             ProbeMask = Data.ReadInt32();
             IgnoreMask = Data.ReadInt64();
 
             LabelTableOffset = Data.ReadInt16();
+            if (LabelTableOffset >= 0) //?
+            {
+                LabelTable = new List<LabelTableEntry>();
+                var tableReader = new ObjectReader(ByteScript);
+                tableReader.ReadRawData(LabelTableOffset);
+
+                var NameRef = tableReader.ReadNameRef();
+                var Offset = tableReader.ReadUInt32();
+                while (Offset != 0x0000FFFF)
+                {
+                    var entry = new LabelTableEntry();
+                    entry.NameRef = NameRef;
+                    entry.Name = PCC.GetName(NameRef);
+                    entry.Offset = Offset;
+                    LabelTable.Add(entry);
+
+                    NameRef = tableReader.ReadNameRef();
+                    Offset = tableReader.ReadUInt32();
+                }
+            }
+
             StateFlags = (StateFlags)Data.ReadInt32();
 
             FunctionMapCount = Data.ReadInt32();

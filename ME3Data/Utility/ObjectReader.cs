@@ -10,30 +10,30 @@ namespace ME3Data.Utility
     public class ObjectReader
     {
         private byte[] _data;
-        private int _size;
-        private int _currentPosition;
+        public int Size;
+        public int Position;
 
         public ObjectReader(byte[] data)
         {
             _data = data;
-            _size = _data.Length;
+            Size = _data.Length;
         }
 
         public void Reset()
         {
-            _currentPosition = 0;
+            Position = 0;
         }
 
         private int _position(int delta)
         {
-            int tmp = _currentPosition;
-            _currentPosition += delta;
+            int tmp = Position;
+            Position += delta;
             return tmp;
         }
 
         public byte[] ReadRawData(int numBytes)
         {
-            if (_currentPosition + numBytes > _size || numBytes <= 0)
+            if (Position + numBytes > Size || numBytes <= 0)
                 return null;
 
             byte[] raw = new byte[numBytes];
@@ -43,52 +43,52 @@ namespace ME3Data.Utility
 
         public byte ReadByte()
         {
-            return _currentPosition + 1 > _size ? (byte)0 : _data[_position(1)];
+            return Position + 1 > Size ? (byte)0 : _data[_position(1)];
         }
 
         public Int32 ReadIndex()
         {
-            return _currentPosition + 4 > _size ? 0 : BitConverter.ToInt32(_data, _position(4));
+            return Position + 4 > Size ? 0 : BitConverter.ToInt32(_data, _position(4));
         }
 
         public Int32 ReadInt32()
         {
-            return _currentPosition + 4 > _size ? 0 : BitConverter.ToInt32(_data, _position(4));
+            return Position + 4 > Size ? 0 : BitConverter.ToInt32(_data, _position(4));
         }
 
         public Int16 ReadInt16()
         {
-            return _currentPosition + 2 > _size ? (Int16)0 : BitConverter.ToInt16(_data, _position(2));
+            return Position + 2 > Size ? (Int16)0 : BitConverter.ToInt16(_data, _position(2));
         }
 
         public Int64 ReadInt64()
         {
-            return _currentPosition + 8 > _size ? 0 : BitConverter.ToInt64(_data, _position(8));
+            return Position + 8 > Size ? 0 : BitConverter.ToInt64(_data, _position(8));
         }
 
         public UInt32 ReadUInt32()
         {
-            return _currentPosition + 4 > _size ? 0 : BitConverter.ToUInt32(_data, _position(4));
+            return Position + 4 > Size ? 0 : BitConverter.ToUInt32(_data, _position(4));
         }
 
         public UInt16 ReadUInt16()
         {
-            return _currentPosition + 2 > _size ? (UInt16)0 : BitConverter.ToUInt16(_data, _position(2));
+            return Position + 2 > Size ? (UInt16)0 : BitConverter.ToUInt16(_data, _position(2));
         }
 
         public UInt64 ReadUInt64()
         {
-            return _currentPosition + 8 > _size ? 0 : BitConverter.ToUInt64(_data, _position(8));
+            return Position + 8 > Size ? 0 : BitConverter.ToUInt64(_data, _position(8));
         }
 
         public float ReadFloat()
         {
-            return _currentPosition + 4 > _size ? 0 : BitConverter.ToSingle(_data, _position(4));
+            return Position + 4 > Size ? 0 : BitConverter.ToSingle(_data, _position(4));
         }
 
         public NameReference ReadNameRef()
         {
-            if (_currentPosition + 8 > _size)
+            if (Position + 8 > Size)
                 return new NameReference();
             var NameRef = new NameReference();
             NameRef.Index = BitConverter.ToInt32(_data, _position(4));

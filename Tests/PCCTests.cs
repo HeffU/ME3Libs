@@ -20,12 +20,14 @@ namespace Tests
             var corestream = new FileStream(corepath, FileMode.Open);
             var corepcc = new PCCFile(new PCCStreamReader(corestream), "Core");
             corepcc.Deserialize();
+            corepcc.ResolveLinks();
             loaded.Add(corepcc);
 
             var enginepath = @"G:\Code\ME3\temp\Engine.pcc";
             var enginestream = new FileStream(enginepath, FileMode.Open);
             var enginepcc = new PCCFile(new PCCStreamReader(enginestream), "Engine");
             enginepcc.Deserialize();
+            enginepcc.ResolveLinks();
             enginepcc.LoadDependencies(loaded);
             loaded.Add(enginepcc);
 
@@ -33,6 +35,7 @@ namespace Tests
             var SFXGamestream = new FileStream(SFXGamepath, FileMode.Open);
             var SFXGamepcc = new PCCFile(new PCCStreamReader(SFXGamestream), "SFXGame");
             SFXGamepcc.Deserialize();
+            enginepcc.ResolveLinks();
             SFXGamepcc.LoadDependencies(loaded);
             loaded.Add(SFXGamepcc);
 

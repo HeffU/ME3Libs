@@ -93,7 +93,39 @@ namespace ME3Data.FileFormats.PCC
             "Distortion",
             "Fractals",
             "Normals",
+            "BioVFX_Z_TEXTURES",
+            "BioVFX_Z_MESHES",
+            "BioVFX_Z_MATERIALS",
+            "BioVFX_C_Weapons"
         };
+
+        private static List<String> _CoreObjectTypes = new List<String>
+        {
+            "ArrayProperty",
+            "BoolProperty",
+            "ByteProperty",
+            "Class",
+            "ClassProperty",
+            "ComponentProperty",
+            "Const",
+            "DelegateProperty",
+            "Enum",
+            "FloatProperty",
+            "Function",
+            "InterfaceProperty",
+            "IntProperty",
+            "MapProperty",
+            "NameProperty",
+            "ObjectProperty",
+            "Package",
+            "Property",
+            "ScriptStruct",
+            "State",
+            "StringRefProperty",
+            "StrProperty",
+            "StructProperty"
+        };
+
 
         public PCCFile(PCCStreamReader data, String name)
         {
@@ -282,13 +314,19 @@ namespace ME3Data.FileFormats.PCC
                 return new ExportTableEntry(null, null);
                 // TODO: this imports the whole package?
             }
+
             var OuterTree = entry.GetOuterTreeString().Split(new char[] {'.'}, 2, StringSplitOptions.RemoveEmptyEntries);
-            if (entry.SourcePCCName == entry.CurrentPCC.Name || OuterTree[0] != entry.SourcePCC.Name 
-                || _NativeOnlyPackages.Contains(OuterTree[0])) // looks like this probably wont be needed.
+            if (OuterTree[0] == entry.CurrentPCC.Name 
+                || _NativeOnlyPackages.Contains(OuterTree[0])
+                || _CoreObjectTypes.Contains(entry.ObjectName))
             {
-                Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
                 return new ExportTableEntry(null, null);
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.
+            }
+
+            if (entry.SourcePCCName != OuterTree[0] && entry.SourcePCC.Name == "Core")
+            {
+                return null;// Get proper pcc here.
             }
 
             var objects = entry.SourcePCC.Exports.Where(x => // TODO: can probably be much quicker, perhaps by outer tree traversal?
@@ -299,18 +337,16 @@ namespace ME3Data.FileFormats.PCC
                 if (OuterTree.Length == 2)
                 {
                     objects = objects.Where(x => String.Equals(x.GetOuterTreeString(), OuterTree[1], StringComparison.OrdinalIgnoreCase));
-                } else
+                } 
+                else
                 {
-                    objects = objects.Where(x => x.GetOuterTreeString() == String.Empty);
+                    objects = objects.Where(x => x.GetOuterTreeString() == String.Empty); // should not happen?
                 }
             }
             if (objects.Count() != 1)
             {
-                if (entry.SourcePCC.Name == "Core")
-                {
-                    return new ExportTableEntry(null, null);
-                    // TODO: this means its a fully native object, we should create those for all types required by ME3.
-                }
+                Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
+                // TODO: find out what causes this, if we can find some connection to see that it's native
                 return null; // This should not happen unless we have a faulty import.
             }
             return objects.First();

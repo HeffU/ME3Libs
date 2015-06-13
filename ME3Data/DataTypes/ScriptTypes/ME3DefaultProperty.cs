@@ -122,6 +122,8 @@ namespace ME3Data.DataTypes.ScriptTypes
                     secondary.Index = NameRef.ModNumber;
                     secondary.ModNumber = Data.ReadInt32();
                     SecondaryName = PCC.GetName(secondary);
+
+                    Name = SecondaryName + "_" + NameRef.Index; // TODO: correct?
                 }
                 else
                 {

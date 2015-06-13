@@ -310,7 +310,6 @@ namespace ME3Data.FileFormats.PCC
         {
             if (entry.ClassName == "Package")
             {
-                //Console.WriteLine(entry.ObjectName + " : " + entry.SourcePCCName);
                 return new ExportTableEntry(null, null);
                 // TODO: this imports the whole package?
             }
@@ -324,9 +323,9 @@ namespace ME3Data.FileFormats.PCC
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.
             }
 
-            if (entry.SourcePCCName != OuterTree[0] && entry.SourcePCC.Name == "Core")
+            if (entry.SourcePCCName != OuterTree[0])
             {
-                return null;// Get proper pcc here.
+                return null;// TODO: Get proper pcc here.
             }
 
             var objects = entry.SourcePCC.Exports.Where(x => // TODO: can probably be much quicker, perhaps by outer tree traversal?
@@ -345,8 +344,6 @@ namespace ME3Data.FileFormats.PCC
             }
             if (objects.Count() != 1)
             {
-                Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
-                // TODO: find out what causes this, if we can find some connection to see that it's native
                 return null; // This should not happen unless we have a faulty import.
             }
             return objects.First();

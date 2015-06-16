@@ -148,13 +148,12 @@ namespace ME3Data.FileFormats.PCC
             ImportPackages = new List<PCCFile>();
         }
 
-        public bool Deserialize()
+        public bool DeserializeTables()
         {
             var header = Data.GetHeaderReader();
             if (!DeserializeHeader(header))
                 return false;
 
-            // Unsure if import table is always after name table, make a more dynamic solution.
             if (!DeserializeNames())
                 return false;
 
@@ -166,6 +165,11 @@ namespace ME3Data.FileFormats.PCC
 
             // TODO: handle extra name table.
 
+            return true;
+        }
+
+        public bool DeserializeObjects()
+        {
             foreach (ExportTableEntry export in Exports)
             {
                 if (!DeserializeExportObject(export))
@@ -331,6 +335,7 @@ namespace ME3Data.FileFormats.PCC
                 || _NativeOnlyPackages.Contains(OuterTree[0])
                 || _CoreObjectTypes.Contains(entry.ObjectName))
             {
+                //Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
                 return new ExportTableEntry(null, null);
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.
             }

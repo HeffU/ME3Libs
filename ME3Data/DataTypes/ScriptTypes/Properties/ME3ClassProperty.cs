@@ -39,8 +39,8 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
                 Class = PCC.GetObjectEntry(_ClassIndex).Object as ME3Class;
             }
 
-            if (Class == null)
-                return false;
+            if (Class == null) // TODO
+                return true; // this should be false, but until native objects are handled by the library this will have to do.
 
             return result;
         }

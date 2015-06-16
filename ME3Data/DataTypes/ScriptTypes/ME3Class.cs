@@ -120,8 +120,11 @@ namespace ME3Data.DataTypes.ScriptTypes
             foreach (var funcRef in _FunctionRefs)
             {
                 var entry = PCC.GetObjectEntry(funcRef);
-                ME3Function func = entry.Object as ME3Function;
-                FunctionRefs.Add(func);
+                if (entry != null) // TODO: this shoud probably never happen.
+                {
+                    ME3Function func = entry.Object as ME3Function;
+                    FunctionRefs.Add(func);
+                }
             }
 
             return result;

@@ -38,8 +38,8 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             {
                 Interface = PCC.GetObjectEntry(_InterfaceIndex).Object as ME3Object;
             }
-            if (Interface == null)
-                return false;
+            if (Interface == null) // TODO
+                return true; // this should be false, but until native objects are handled by the library this will have to do.
 
             return result;
         }

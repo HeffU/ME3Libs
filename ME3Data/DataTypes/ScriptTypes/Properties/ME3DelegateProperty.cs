@@ -49,8 +49,8 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             {
                 Delegate = PCC.GetObjectEntry(_DeleIndex).Object as ME3Function;
             }
-            if (Delegate == null)
-                return false;
+            if (Delegate == null) // TODO
+                return true; // this should be false, but until native objects are handled by the library this will have to do.
 
             return result;
         }

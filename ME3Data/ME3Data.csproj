@@ -108,7 +108,7 @@
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3NameProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3ObjectProperty.cs" />
     <Compile Include="DataTypes\ScriptTypes\Properties\ME3StrProperty.cs" />
-    <Compile Include="DataTypes\ScriptTypes\Properties\ME3StructPRoperty.cs" />
+    <Compile Include="DataTypes\ScriptTypes\Properties\ME3StructProperty.cs" />
     <Compile Include="FileFormats\PCC\ExportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\ImportTableEntry.cs" />
     <Compile Include="FileFormats\PCC\PCCFile.cs" />

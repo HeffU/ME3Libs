@@ -38,8 +38,8 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             {
                 Struct = PCC.GetObjectEntry(_StructIndex).Object as ME3Object;
             }
-            if (Struct == null)
-                return false;
+            if (Struct == null) // TODO
+                return true; // this should be false, but until native objects are handled by the library this will have to do.
 
             return result;
         }

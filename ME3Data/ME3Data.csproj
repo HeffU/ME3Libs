@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="DataTypes\DataStructs.cs" />
     <Compile Include="DataTypes\ME3Flags.cs" />
+    <Compile Include="DataTypes\NativeImports\NativeME3Class.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\ArrayPropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\BioWareValues\BioMask4PropertyValue.cs" />
     <Compile Include="DataTypes\ScriptTypes\DefaultProperties\BoolPropertyValue.cs" />

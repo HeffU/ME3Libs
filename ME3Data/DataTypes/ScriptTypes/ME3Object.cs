@@ -16,7 +16,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         // Default properties for anything except 'Class' types
         public List<ME3DefaultProperty> DefaultProperties;
 
-        public String Name { get { return ExportEntry.ObjectName; } }
+        public virtual String Name { get { return ExportEntry.ObjectName; } }
 
         public ExportTableEntry ExportEntry;
 

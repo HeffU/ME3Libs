@@ -1,4 +1,5 @@
 ﻿using ME3Data.DataTypes;
+using ME3Data.DataTypes.NativeImports;
 using ME3Data.DataTypes.ScriptTypes;
 using ME3Data.DataTypes.ScriptTypes.Properties;
 using ME3Data.Utility;
@@ -335,8 +336,25 @@ namespace ME3Data.FileFormats.PCC
                 || _NativeOnlyPackages.Contains(OuterTree[0])
                 || _CoreObjectTypes.Contains(entry.ObjectName))
             {
+                if (entry.ClassName == "Class") 
+                {
+                    // Quick hack until all classes are mapped
+                    var nativeClass = new ExportTableEntry(null, null);
+                    nativeClass.ObjectName = entry.ObjectName;
+                    nativeClass.OuterName = "Object";
+                    nativeClass.ClassName = "Class";
+                    nativeClass.Object = new NativeME3Class(entry.ObjectName);
+                    return nativeClass;
+                }
+
+                // Quick hack until all objects are mapped
+                var native = new ExportTableEntry(null, null);
+                native.ObjectName = entry.ObjectName;
+                native.OuterName = "Object";
+                native.ClassName = "Class";
+                native.Object = new NativeME3Class(entry.ObjectName);
+                return native;
                 //Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
-                return new ExportTableEntry(null, null);
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.
             }
 

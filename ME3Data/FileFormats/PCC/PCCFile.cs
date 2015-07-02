@@ -344,6 +344,7 @@ namespace ME3Data.FileFormats.PCC
                     nativeClass.OuterName = "Object";
                     nativeClass.ClassName = "Class";
                     nativeClass.Object = new NativeME3Class(entry.ObjectName);
+                    nativeClass.FullyNative = true;
                     return nativeClass;
                 }
 
@@ -353,6 +354,7 @@ namespace ME3Data.FileFormats.PCC
                 native.OuterName = "Object";
                 native.ClassName = "Class";
                 native.Object = new NativeME3Class(entry.ObjectName);
+                native.FullyNative = true;
                 return native;
                 //Console.WriteLine(entry.SourcePCCName + " to " + entry.CurrentPCC.Name + " | " + entry.ClassName + " | " + entry.GetOuterTreeString() + "." + entry.ObjectName);
                 // TODO: this means its a fully native object, we should create those for all types required by ME3.

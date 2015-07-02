@@ -41,6 +41,11 @@ namespace ME3Data.FileFormats.PCC
         /// </summary>
         public static UInt32 SizeInBytes = 68;
 
+        /// <summary>
+        /// True if the export entry is generated for a fully native import.
+        /// </summary>
+        public bool FullyNative = false;
+
 
         private Int32 _ClassIndex;
         private Int32 _SuperIndex;
@@ -62,8 +67,7 @@ namespace ME3Data.FileFormats.PCC
             ClassName = CurrentPCC.GetClassName(_ClassIndex);
             _SuperIndex = Data.ReadInt32();
             _OuterIndex = Data.ReadInt32();
-            // do in resolve links?
-            //OuterName = CurrentPCC.GetObjectEntry(_OuterIntex).ObjectName;
+
             _ObjectNameRef = Data.ReadNameRef();
             ObjectName = CurrentPCC.GetName(_ObjectNameRef);
             if (_ObjectNameRef.ModNumber > -1)
@@ -83,6 +87,12 @@ namespace ME3Data.FileFormats.PCC
             Data.ReadRawData(4); // Skip package flags
 
             return (int)SizeInBytes + 4 * netObjectCount;
+        }
+
+        public bool ResolveLinks()
+        {
+            OuterName = CurrentPCC.GetObjectEntry(_OuterIndex).ObjectName;
+            return true;
         }
     }
 }

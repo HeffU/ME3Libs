@@ -71,7 +71,7 @@ namespace ME3Data.FileFormats.PCC
 
             var entry = PCCFile.GetExportFromImport(this);
             if (entry == null)
-                return true; // TODO, this should throw an error.
+                return false;
             SourceEntry = entry as ExportTableEntry;
 
             Object = SourceEntry.Object;

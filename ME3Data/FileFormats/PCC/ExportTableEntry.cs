@@ -91,7 +91,10 @@ namespace ME3Data.FileFormats.PCC
 
         public bool ResolveLinks()
         {
-            OuterName = CurrentPCC.GetObjectEntry(_OuterIndex).ObjectName;
+            if (_OuterIndex != 0)
+                OuterName = CurrentPCC.GetObjectEntry(_OuterIndex).ObjectName;
+            else
+                OuterName = "object";
             return true;
         }
     }

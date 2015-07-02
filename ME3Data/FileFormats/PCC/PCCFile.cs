@@ -184,7 +184,7 @@ namespace ME3Data.FileFormats.PCC
         {
             foreach (ExportTableEntry export in Exports)
             {
-                if (!export.Object.ResolveLinks())
+                if (!export.ResolveLinks() || !export.Object.ResolveLinks())
                     return false;
             }
 
@@ -341,7 +341,7 @@ namespace ME3Data.FileFormats.PCC
                     // Quick hack until all classes are mapped
                     var nativeClass = new ExportTableEntry(null, null);
                     nativeClass.ObjectName = entry.ObjectName;
-                    nativeClass.OuterName = "Object";
+                    nativeClass.OuterName = "object";
                     nativeClass.ClassName = "Class";
                     nativeClass.Object = new NativeME3Class(entry.ObjectName);
                     nativeClass.FullyNative = true;
@@ -351,7 +351,7 @@ namespace ME3Data.FileFormats.PCC
                 // Quick hack until all objects are mapped
                 var native = new ExportTableEntry(null, null);
                 native.ObjectName = entry.ObjectName;
-                native.OuterName = "Object";
+                native.OuterName = "object";
                 native.ClassName = "Class";
                 native.Object = new NativeME3Class(entry.ObjectName);
                 native.FullyNative = true;

@@ -76,7 +76,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                 }
                 else if (String.Compare(obj.ExportEntry.ClassName, "Struct", StringComparison.OrdinalIgnoreCase) == 0
                     || String.Compare(obj.ExportEntry.ClassName, "ScriptStruct", StringComparison.OrdinalIgnoreCase) == 0)
-                {
+                { // TODO: is this correct, struct/scriptstruct?
                     Structs.Add(obj as ME3Struct);
                 }
                 obj = obj.NextField;

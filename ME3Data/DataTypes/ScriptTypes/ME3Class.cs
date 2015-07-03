@@ -30,6 +30,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         public List<ME3Function> FunctionRefs;
         //public List<String> FunctionRefs;
 
+        public List<ME3Function> DefinedFunctions;
+
         private Int32 _OuterClassIndex;
 
         private Int32 _unkn1;
@@ -96,6 +98,15 @@ namespace ME3Data.DataTypes.ScriptTypes
         public override bool ResolveLinks()
         {
             var result = base.ResolveLinks();
+
+            DefinedFunctions = new List<ME3Function>();
+            foreach (var member in Members)
+            {
+                if (member.GetType() == typeof(ME3Function))
+                {
+                    DefinedFunctions.Add(member as ME3Function);
+                }
+            }
 
             OuterClass = PCC.GetExportObject(_OuterClassIndex) as ME3Class;
 

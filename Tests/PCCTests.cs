@@ -102,7 +102,7 @@ namespace Tests
             pcc.LoadDependencies(loaded);
             Assert.IsTrue(pcc.ResolveLinks());
 
-            var obj = pcc.GetExportObject(4) as ME3Class;
+            var obj = pcc.GetExportObject(17) as ME3Class;
             var convert = new ME3ObjectConverter(obj);
             var ast = convert.ConvertClass();
             var CodeBuilder = new CodeBuilderVisitor();

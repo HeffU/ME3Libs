@@ -5,6 +5,9 @@ using System.IO;
 using ME3Data.FileFormats.PCC;
 using ME3Data.Utility;
 using System.Collections.Generic;
+using ME3Script.Decompiling;
+using ME3Data.DataTypes.ScriptTypes;
+using ME3Script.Analysis.Visitors;
 
 namespace Tests
 {
@@ -97,10 +100,14 @@ namespace Tests
             }
 
             pcc.LoadDependencies(loaded);
-
             Assert.IsTrue(pcc.ResolveLinks());
 
-
+            var obj = pcc.GetExportObject(4) as ME3Class;
+            var convert = new ME3ObjectConverter(obj);
+            var ast = convert.ConvertClass();
+            var CodeBuilder = new CodeBuilderVisitor();
+            ast.AcceptVisitor(CodeBuilder);
+            Console.Write(CodeBuilder.GetCodeString());
 
             stream.Close();
         }

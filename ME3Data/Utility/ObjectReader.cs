@@ -9,7 +9,7 @@ namespace ME3Data.Utility
 {
     public class ObjectReader
     {
-        private byte[] _data;
+        protected byte[] _data;
         public int Size;
         public int Position;
 

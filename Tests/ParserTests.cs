@@ -422,6 +422,19 @@ namespace Tests
                 "   {" +
                 "       c = c - c - c;" +
                 "   }" +
+                "   if (false) {" +
+                "       switch(one.a) {" +
+                "           case one.a:" +
+                "               c = one.a;" +
+                "               break;" +
+                "           case 1.2:" +
+                "           case 1.3:" +
+                "               c = c + 0.5;" +
+                "               break;" +
+                "           default:" +
+                "               c = 6.6;" +
+                "       }" +
+                "   }" + 
                 "   return one.a + 0.33 * (0.66 + 0.1) * 1.5;\n" +
                 "}\n" +
                 "private simulated function float MyFunc( out testStruct one, coerce optional float two ) \n" +

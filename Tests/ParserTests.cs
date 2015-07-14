@@ -502,6 +502,8 @@ namespace Tests
             node.AcceptVisitor(CodeBuilder);
             Console.Write(CodeBuilder.GetCodeString());
 
+            Assert.IsTrue(log.AllErrors.Count == 0);
+
             return;
         }
     }

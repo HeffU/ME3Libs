@@ -19,7 +19,7 @@ namespace Tests
         {
             var loaded = new List<PCCFile>();
 
-            var corepath = @"G:\Code\ME3\temp\Core.pcc";
+            /*var corepath = @"G:\Code\ME3\temp\Core.pcc";
             var corestream = new FileStream(corepath, FileMode.Open);
             var corepcc = new PCCFile(new PCCStreamReader(corestream), "Core");
             Assert.IsTrue(corepcc.DeserializeTables());
@@ -79,7 +79,7 @@ namespace Tests
             Assert.IsTrue(SFXGamepcc.DeserializeObjects());
             Assert.IsTrue(enginepcc.ResolveLinks());
             SFXGamepcc.LoadDependencies(loaded);
-            loaded.Add(SFXGamepcc);
+            loaded.Add(SFXGamepcc);*/
 
             var path = @"G:\Code\ME3\temp\SFXWeapon_Pistol_Carnifex.pcc";
             var stream = new FileStream(path, FileMode.Open);
@@ -89,7 +89,7 @@ namespace Tests
             Assert.IsTrue(pcc.DeserializeObjects());
             var deps = pcc.ImportPackageNames;
 
-            foreach (var dep in deps.Where(x => !loaded.Any(p => p.Name == x)))
+            /*foreach (var dep in deps.Where(x => !loaded.Any(p => p.Name == x)))
             {
                 var depPath = @"G:\Code\ME3\temp\" + dep + ".pcc";
                 var depStream = new FileStream(depPath, FileMode.Open);
@@ -99,8 +99,8 @@ namespace Tests
                 loaded.Add(depPCC);
             }
 
-            pcc.LoadDependencies(loaded);
-            Assert.IsTrue(pcc.ResolveLinks());
+            pcc.LoadDependencies(loaded);*/
+            Assert.IsTrue(pcc.ResolveLinks()); 
 
             var obj = pcc.GetExportObject(17) as ME3Class;
             var convert = new ME3ObjectConverter(obj);

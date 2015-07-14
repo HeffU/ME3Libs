@@ -122,5 +122,17 @@ namespace ME3Data.Utility
                 return Encoding.ASCII.GetString(bytes).Substring(0, size - 1);
             }
         }
+
+        public String ReadNullTerminatedString()
+        {
+            var str = "";
+            var curr = ReadByte();
+            while (curr != 0)
+            {
+                str += (char)curr;
+                curr = ReadByte();
+            }
+            return str;
+        }
     }
 }

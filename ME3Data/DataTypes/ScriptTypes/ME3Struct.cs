@@ -43,7 +43,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             DataScript = Data.ReadRawData(DataScriptSize);
 
             if (DataScriptSize > 0)
-                Array.Copy(DataScript, 0, ByteScript, ByteScriptSize - DataScriptSize, DataScriptSize);
+                Array.Copy(DataScript, 0, ByteScript, 0, DataScriptSize); // Copy in file form, with room to expand to virtual space.
 
             return result;
         }

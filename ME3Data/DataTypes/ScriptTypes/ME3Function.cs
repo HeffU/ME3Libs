@@ -12,7 +12,7 @@ namespace ME3Data.DataTypes.ScriptTypes
     {
         public UInt16 NativeToken;
 
-        public Byte OperatorPrescedence;
+        public Byte OperatorPrecedence;
 
         public FunctionFlags FunctionFlags;
 
@@ -34,7 +34,7 @@ namespace ME3Data.DataTypes.ScriptTypes
 
             NativeToken = Data.ReadUInt16();
 
-            //OperatorPrescedence = Data.ReadByte(); // Does not appear in ME3?
+            //OperatorPrecedence = Data.ReadByte(); // Does not appear in ME3?
 
             FunctionFlags = (FunctionFlags)Data.ReadInt32();
 

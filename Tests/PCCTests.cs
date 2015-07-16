@@ -85,9 +85,13 @@ namespace Tests
             //var stream = new FileStream(path, FileMode.Open);
             //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Pistol_Carnifex");
 
-            var path = @"G:\Code\ME3\temp\SFXWeapon_Heavy_ArcProjector.pcc";
+            //var path = @"G:\Code\ME3\temp\SFXWeapon_Heavy_ArcProjector.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Heavy_ArcProjector");  
+
+            var path = @"G:\Code\ME3\temp\SFXPawn_Brute.pcc";
             var stream = new FileStream(path, FileMode.Open);
-            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Heavy_ArcProjector");            
+            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXPawn_Brute");      
 
             Assert.IsTrue(pcc.DeserializeTables());
             Assert.IsTrue(pcc.DeserializeObjects());

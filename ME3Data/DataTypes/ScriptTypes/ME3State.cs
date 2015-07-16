@@ -11,7 +11,7 @@ namespace ME3Data.DataTypes.ScriptTypes
     public class ME3State : ME3Struct
     {
         // Function masks
-        public Int32 ProbeMask;
+        public Int32 ProbeMask; // TODO: understand probe functions in UE3
         public Int64 IgnoreMask;
 
         // Relative to ByteScript start
@@ -20,6 +20,8 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public Int32 FunctionMapCount;
         public List<ME3Function> FunctionMap;
+
+        public List<ME3Function> DefinedFunctions;
 
         public List<LabelTableEntry> LabelTable;
 
@@ -43,7 +45,9 @@ namespace ME3Data.DataTypes.ScriptTypes
             IgnoreMask = Data.ReadInt64();
 
             LabelTableOffset = Data.ReadInt16();
-            if (LabelTableOffset >= 0) //?
+
+            // This can't be processed here unless the bytecode is also processed for virtual address space
+            /*if (LabelTableOffset >= 0) 
             {
                 LabelTable = new List<LabelTableEntry>();
                 var tableReader = new ObjectReader(ByteScript);
@@ -62,7 +66,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                     NameRef = tableReader.ReadNameRef();
                     Offset = tableReader.ReadUInt32();
                 }
-            }
+            }*/
 
             StateFlags = (StateFlags)Data.ReadInt32();
 
@@ -90,6 +94,15 @@ namespace ME3Data.DataTypes.ScriptTypes
                 if (func == null)
                     return false;
                 FunctionMap.Add(func);
+            }
+
+            DefinedFunctions = new List<ME3Function>();
+            foreach (var member in Members)
+            {
+                if (member.GetType() == typeof(ME3Function))
+                {
+                    DefinedFunctions.Add(member as ME3Function);
+                }
             }
 
             return result;

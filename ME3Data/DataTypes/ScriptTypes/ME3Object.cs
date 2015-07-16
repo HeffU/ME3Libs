@@ -34,7 +34,9 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             NetIndex = Data.ReadIndex();
 
-            if (!String.Equals(ExportEntry.ClassName, "Class", StringComparison.OrdinalIgnoreCase))
+            if (!String.Equals(ExportEntry.ClassName, "Class", StringComparison.OrdinalIgnoreCase)
+                // Work-around for totally undocumented class that does not follow standard unreal default property structure.
+                && !String.Equals(ExportEntry.ClassName, "BioDynamicLightEnvironmentComponent", StringComparison.OrdinalIgnoreCase))
             {
                 return DeserializeDefaultProperties();
             }

@@ -22,6 +22,8 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int32 ComponentCount;
         public List<ME3Object> Components;
 
+        public List<ME3State> States;
+
         public Int32 DLLBindIndex;
 
         public Int32 DefaultPropertyIndex;
@@ -29,8 +31,6 @@ namespace ME3Data.DataTypes.ScriptTypes
         public Int32 FunctionRefCount;
         public List<ME3Function> FunctionRefs;
         //public List<String> FunctionRefs;
-
-        public List<ME3Function> DefinedFunctions;
 
         private Int32 _OuterClassIndex;
 
@@ -99,15 +99,6 @@ namespace ME3Data.DataTypes.ScriptTypes
         {
             var result = base.ResolveLinks();
 
-            DefinedFunctions = new List<ME3Function>();
-            foreach (var member in Members)
-            {
-                if (member.GetType() == typeof(ME3Function))
-                {
-                    DefinedFunctions.Add(member as ME3Function);
-                }
-            }
-
             OuterClass = PCC.GetExportObject(_OuterClassIndex) as ME3Class;
 
             ImplementedInterfaces = new List<ME3Class>();
@@ -137,6 +128,10 @@ namespace ME3Data.DataTypes.ScriptTypes
                     FunctionRefs.Add(func);
                 }
             }
+
+            States = new List<ME3State>();
+            foreach (var state in Members.Where(s => typeof(ME3State) == s.GetType()))
+                States.Add(state as ME3State);
 
             return result;
         }

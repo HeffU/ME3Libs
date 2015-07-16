@@ -114,6 +114,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (String.Equals(Name, "None", StringComparison.OrdinalIgnoreCase))
                 return false;
 
+
             if (NameRef.ModNumber > -1)
             {
                 if (NameRef.ModNumber > 0x1F)   // Some weird inner name

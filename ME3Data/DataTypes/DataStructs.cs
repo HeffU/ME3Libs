@@ -33,6 +33,6 @@ namespace ME3Data.DataTypes
     {
         public NameReference NameRef;
         public String Name;
-        public UInt32 Offset; // Relative to DataScript start (?)
+        public UInt32 Offset; // standard bytescript MemOffs
     }
 }

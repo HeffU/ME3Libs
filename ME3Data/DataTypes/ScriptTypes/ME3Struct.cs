@@ -72,7 +72,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                 } 
                 else if (String.Compare(obj.ExportEntry.ClassName, "const", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    Constants.Add(obj as ME3Const);
+                    Constants.Add(obj as ME3Const); // TODO: does this happen? If so, handle in decompiler, locals etc.
                 }
                 else if (String.Compare(obj.ExportEntry.ClassName, "Struct", StringComparison.OrdinalIgnoreCase) == 0
                     || String.Compare(obj.ExportEntry.ClassName, "ScriptStruct", StringComparison.OrdinalIgnoreCase) == 0)

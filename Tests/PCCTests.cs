@@ -25,7 +25,7 @@ namespace Tests
             Assert.IsTrue(corepcc.DeserializeTables());
             Assert.IsTrue(corepcc.DeserializeObjects());
             corepcc.ResolveLinks();
-            loaded.Add(corepcc);
+            loaded.Add(corepcc); 
 
             var enginepath = @"G:\Code\ME3\temp\Engine.pcc";
             var enginestream = new FileStream(enginepath, FileMode.Open);

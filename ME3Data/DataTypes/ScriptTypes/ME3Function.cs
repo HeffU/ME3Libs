@@ -20,6 +20,8 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         public List<ME3Property> Parameters;
 
+        public List<ME3Property> LocalVariables;
+
         public ME3Property ReturnValue;
 
         public ME3Function(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
@@ -49,6 +51,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             var result = base.ResolveLinks();
 
             Parameters = new List<ME3Property>();
+            LocalVariables = new List<ME3Property>();
             foreach(var variable in Variables)
             {
                 if (variable.PropertyFlags.HasFlag(PropertyFlags.ReturnParm))
@@ -58,6 +61,10 @@ namespace ME3Data.DataTypes.ScriptTypes
                 else if (variable.PropertyFlags.HasFlag(PropertyFlags.Parm))
                 {
                     Parameters.Add(variable);
+                }
+                else
+                {
+                    LocalVariables.Add(variable);
                 }
             }
 

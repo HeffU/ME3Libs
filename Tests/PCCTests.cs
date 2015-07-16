@@ -81,9 +81,13 @@ namespace Tests
             SFXGamepcc.LoadDependencies(loaded);
             loaded.Add(SFXGamepcc);*/
 
-            var path = @"G:\Code\ME3\temp\SFXWeapon_Pistol_Carnifex.pcc";
+            //var path = @"G:\Code\ME3\temp\SFXWeapon_Pistol_Carnifex.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Pistol_Carnifex");
+
+            var path = @"G:\Code\ME3\temp\SFXWeapon_Heavy_ArcProjector.pcc";
             var stream = new FileStream(path, FileMode.Open);
-            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Pistol_Carnifex");
+            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Heavy_ArcProjector");            
 
             Assert.IsTrue(pcc.DeserializeTables());
             Assert.IsTrue(pcc.DeserializeObjects());
@@ -100,14 +104,19 @@ namespace Tests
             }
 
             pcc.LoadDependencies(loaded);*/
-            Assert.IsTrue(pcc.ResolveLinks()); 
+            Assert.IsTrue(pcc.ResolveLinks());
 
-            var obj = pcc.GetExportObject(17) as ME3Class;
-            var convert = new ME3ObjectConverter(obj);
-            var ast = convert.ConvertClass();
-            var CodeBuilder = new CodeBuilderVisitor();
-            ast.AcceptVisitor(CodeBuilder);
-            Console.Write(CodeBuilder.GetCodeString());
+            foreach (var exp in pcc.Exports.Where(e => e.ClassName.ToLower() == "class"))
+            {
+                Console.WriteLine("------------------------------" + exp.ObjectName + "------------------------------");
+                var obj = exp.Object as ME3Class;
+                var convert = new ME3ObjectConverter(obj);
+                var ast = convert.ConvertClass();
+                var CodeBuilder = new CodeBuilderVisitor();
+                ast.AcceptVisitor(CodeBuilder);
+                Console.Write(CodeBuilder.GetCodeString());
+                Console.WriteLine("");
+            }
 
             stream.Close();
         }

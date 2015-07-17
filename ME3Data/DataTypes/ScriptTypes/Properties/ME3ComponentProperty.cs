@@ -10,7 +10,6 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
 {
     public class ME3ComponentProperty : ME3ObjectProperty
     {
-
         public ME3ComponentProperty(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
             : base(data, exp, pcc)
         {

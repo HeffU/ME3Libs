@@ -62,9 +62,9 @@ namespace ME3Data.DataTypes
         Event                   = 0x00000800U, 
         Operator                = 0x00001000U,
         Static                  = 0x00002000U, 
-                                                // Verify this, are NoExport / optionalParameters gone?
+        OptionalParameters      = 0x00004000U,  // TODO: verify if NoExport still exists?
         Const                   = 0x00008000U,
-                                                // Invariant gone?
+        Invariant               = 0x00010000U,  // TODO: verify if this still exists
         Public                  = 0x00020000U,
         Private                 = 0x00040000U,
         Protected               = 0x00080000U, 

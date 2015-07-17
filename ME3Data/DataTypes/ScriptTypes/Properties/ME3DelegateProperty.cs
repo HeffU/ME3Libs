@@ -13,6 +13,9 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
         public ME3Function Function;
         public ME3Function Delegate;
 
+        public String FunctionName = "Unknown";
+        public String DelegateName = "Unknown";
+
         private Int32 _FuncIndex;
         private Int32 _DeleIndex;
 
@@ -39,14 +42,16 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             var entry = PCC.GetObjectEntry(_FuncIndex);
             if (entry != null)
             {
+                FunctionName = entry.ObjectName;
                 Function = PCC.GetObjectEntry(_FuncIndex).Object as ME3Function;
             }
-            if (Function == null)
-                return false;
+            if (Function == null) // TODO
+                return true; // this should be false, but until native objects are handled by the library this will have to do.
 
             entry = PCC.GetObjectEntry(_DeleIndex);
             if (entry != null)
             {
+                DelegateName = entry.ObjectName;
                 Delegate = PCC.GetObjectEntry(_DeleIndex).Object as ME3Function;
             }
             if (Delegate == null) // TODO

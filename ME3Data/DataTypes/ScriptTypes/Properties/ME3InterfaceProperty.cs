@@ -11,6 +11,7 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
     public class ME3InterfaceProperty : ME3Property
     {
         public ME3Object Interface;
+        public String InterfaceName = "Unknown";
 
         private Int32 _InterfaceIndex;
 
@@ -36,6 +37,7 @@ namespace ME3Data.DataTypes.ScriptTypes.Properties
             var entry = PCC.GetObjectEntry(_InterfaceIndex);
             if (entry != null)
             {
+                InterfaceName = entry.ObjectName;
                 Interface = PCC.GetObjectEntry(_InterfaceIndex).Object as ME3Object;
             }
             if (Interface == null) // TODO

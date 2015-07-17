@@ -77,9 +77,9 @@ namespace Tests
             var SFXGamepcc = new PCCFile(new PCCStreamReader(SFXGamestream), "SFXGame");
             Assert.IsTrue(SFXGamepcc.DeserializeTables());
             Assert.IsTrue(SFXGamepcc.DeserializeObjects());
-            Assert.IsTrue(enginepcc.ResolveLinks());
+            Assert.IsTrue(SFXGamepcc.ResolveLinks());
             SFXGamepcc.LoadDependencies(loaded);
-            loaded.Add(SFXGamepcc);*/
+            loaded.Add(SFXGamepcc); */
 
             //var path = @"G:\Code\ME3\temp\SFXWeapon_Pistol_Carnifex.pcc";
             //var stream = new FileStream(path, FileMode.Open);
@@ -89,13 +89,17 @@ namespace Tests
             //var stream = new FileStream(path, FileMode.Open);
             //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Heavy_ArcProjector");  
 
-            var path = @"G:\Code\ME3\temp\SFXPawn_Brute.pcc";
-            var stream = new FileStream(path, FileMode.Open);
-            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXPawn_Brute");
+            //var path = @"G:\Code\ME3\temp\SFXPawn_Brute.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXPawn_Brute");
 
             //var path = @"G:\Code\ME3\temp\Asari_Adept_MP.pcc";
             //var stream = new FileStream(path, FileMode.Open);
-            //var pcc = new PCCFile(new PCCStreamReader(stream), "Asari_Adept_MP");      
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "Asari_Adept_MP");     
+
+            var path = @"G:\Code\ME3\temp\SFXGame.pcc";
+            var stream = new FileStream(path, FileMode.Open);
+            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXGame");
 
             Assert.IsTrue(pcc.DeserializeTables());
             Assert.IsTrue(pcc.DeserializeObjects());
@@ -114,16 +118,16 @@ namespace Tests
             pcc.LoadDependencies(loaded);*/
             Assert.IsTrue(pcc.ResolveLinks());
 
+            var dumpPath = @"G:\Code\ME3\temp\dump\";
+
             foreach (var exp in pcc.Exports.Where(e => e.ClassName.ToLower() == "class"))
             {
-                Console.WriteLine("------------------------------" + exp.ObjectName + "------------------------------");
                 var obj = exp.Object as ME3Class;
                 var convert = new ME3ObjectConverter(obj);
                 var ast = convert.ConvertClass();
                 var CodeBuilder = new CodeBuilderVisitor();
                 ast.AcceptVisitor(CodeBuilder);
-                Console.Write(CodeBuilder.GetCodeString());
-                Console.WriteLine("");
+                File.WriteAllLines(dumpPath + exp.ObjectName + ".txt", CodeBuilder.GetCodeLines());
             }
 
             /*foreach (var exp in pcc.Exports.Where(e => e.ClassName.ToLower() == "class"))

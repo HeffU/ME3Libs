@@ -89,13 +89,13 @@ namespace Tests
             //var stream = new FileStream(path, FileMode.Open);
             //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXWeapon_Heavy_ArcProjector");  
 
-            //var path = @"G:\Code\ME3\temp\SFXPawn_Brute.pcc";
-            //var stream = new FileStream(path, FileMode.Open);
-            //var pcc = new PCCFile(new PCCStreamReader(stream), "SFXPawn_Brute");
-
-            var path = @"G:\Code\ME3\temp\Asari_Adept_MP.pcc";
+            var path = @"G:\Code\ME3\temp\SFXPawn_Brute.pcc";
             var stream = new FileStream(path, FileMode.Open);
-            var pcc = new PCCFile(new PCCStreamReader(stream), "Asari_Adept_MP");      
+            var pcc = new PCCFile(new PCCStreamReader(stream), "SFXPawn_Brute");
+
+            //var path = @"G:\Code\ME3\temp\Asari_Adept_MP.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "Asari_Adept_MP");      
 
             Assert.IsTrue(pcc.DeserializeTables());
             Assert.IsTrue(pcc.DeserializeObjects());
@@ -125,6 +125,21 @@ namespace Tests
                 Console.Write(CodeBuilder.GetCodeString());
                 Console.WriteLine("");
             }
+
+            /*foreach (var exp in pcc.Exports.Where(e => e.ClassName.ToLower() == "class"))
+            {
+                var obj = exp.Object as ME3Class;
+                var convert = new ME3ObjectConverter(obj);
+                var ast = convert.ConvertClass();
+                foreach (var func in ast.Functions)
+                {
+                    Console.WriteLine("------------------------------" + func.Name + "------------------------------");
+                    var CodeBuilder = new CodeBuilderVisitor();
+                    func.AcceptVisitor(CodeBuilder);
+                    Console.Write(CodeBuilder.GetCodeString());
+                    Console.WriteLine("");
+                }
+            }*/
 
             stream.Close();
         }

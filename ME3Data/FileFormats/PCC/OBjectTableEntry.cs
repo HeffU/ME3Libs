@@ -72,5 +72,21 @@ namespace ME3Data.FileFormats.PCC
             }
             return str;
         }
+
+        public ObjectTableEntry GetOuterOfType(String type)
+        {
+            var outer = CurrentPCC.GetObjectEntry(_OuterIndex);
+            if (outer == null)
+                return null;
+            while (type.ToLower() != outer.ClassName.ToLower())
+            {
+                if (outer._OuterIndex == 0)
+                {
+                    return null;
+                }
+                outer = CurrentPCC.GetObjectEntry(outer._OuterIndex);
+            }
+            return outer;
+        }
     }
 }

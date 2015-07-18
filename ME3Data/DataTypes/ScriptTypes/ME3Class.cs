@@ -65,8 +65,8 @@ namespace ME3Data.DataTypes.ScriptTypes
             for (int i = 0; i < InterfaceCount; i++)
             {
                 var interfaceRef = new InterfaceMapEntry();
-                interfaceRef.ObjectIndex = Data.ReadInt32();
-                interfaceRef.TypeIndex = Data.ReadInt32();
+                interfaceRef.ClassIndex = Data.ReadInt32();
+                interfaceRef.PropertyPointer = Data.ReadInt32();
                 _ImplInterfaces.Add(interfaceRef);
             }
 
@@ -75,7 +75,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             {
                 var componentRef = new ComponentMapEntry();
                 componentRef.NameRef = Data.ReadNameRef();
-                componentRef.ObjectIndex = Data.ReadInt32();
+                componentRef.ComponentObjectIndex = Data.ReadInt32();
                 _Components.Add(componentRef);
             }
 
@@ -105,21 +105,21 @@ namespace ME3Data.DataTypes.ScriptTypes
             Components = new List<ME3Object>();
             FunctionRefs = new List<ME3Function>();
 
-            foreach (var interfaceRef in _ImplInterfaces)
+            foreach (var interfaceRef in _ImplInterfaces) // TODO: overhaul to objectableentry, or provide native object support.
             {
-                var obj = PCC.GetExportObject(interfaceRef.ObjectIndex);
+                var obj = PCC.GetExportObject(interfaceRef.ClassIndex);
                 if (obj != null)
                     ImplementedInterfaces.Add(obj as ME3Class);
             }
 
-            foreach (var component in _Components)
+            foreach (var component in _Components) // TODO: overhaul to objectableentry, or provide native object support.
             {
-                var obj = PCC.GetExportObject(component.ObjectIndex);
+                var obj = PCC.GetExportObject(component.ComponentObjectIndex);
                 if (obj != null)
                     Components.Add(obj);
             }
 
-            foreach (var funcRef in _FunctionRefs)
+            foreach (var funcRef in _FunctionRefs) // TODO: overhaul
             {
                 var entry = PCC.GetObjectEntry(funcRef);
                 if (entry != null) // TODO: this shoud probably never happen.

@@ -19,7 +19,7 @@ namespace ME3Data.DataTypes.ScriptTypes
         public StateFlags StateFlags;
 
         public Int32 FunctionMapCount;
-        public List<ME3Function> FunctionMap;
+        public List<ME3Function> FunctionMap; // Should be a map by name for all functions available in this state
 
         public List<ME3Function> DefinedFunctions;
 
@@ -76,7 +76,7 @@ namespace ME3Data.DataTypes.ScriptTypes
                 var funcEntry = new FunctionMapEntry();
                 funcEntry.NameRef.Index = Data.ReadInt32();
                 funcEntry.NameRef.ModNumber = Data.ReadInt32();
-                funcEntry.ObjectIndex = Data.ReadInt32();
+                funcEntry.FunctionObjectIndex = Data.ReadInt32();
                 _FunctionMap.Add(funcEntry);
             }
 
@@ -90,7 +90,7 @@ namespace ME3Data.DataTypes.ScriptTypes
             FunctionMap = new List<ME3Function>();
             foreach (var funcEntry in _FunctionMap)
             {
-                var func = PCC.GetExportObject(funcEntry.ObjectIndex) as ME3Function;
+                var func = PCC.GetExportObject(funcEntry.FunctionObjectIndex) as ME3Function;
                 if (func == null)
                     return false;
                 FunctionMap.Add(func);

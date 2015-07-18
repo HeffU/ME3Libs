@@ -18,11 +18,12 @@ namespace ME3Data.DataTypes.ScriptTypes
 
         // Network
         public UInt16 ReplicateOffset;
+        public UInt16 ReplicateIndex;
 
-        public String UnkNameRef;
+        public String Category;
 
-        private NameReference _UnkNameRef;
-        private Int32 _Unk2;
+        private NameReference _CategoryNameRef;
+
 
         public ME3Property(ObjectReader data, ExportTableEntry exp, PCCFile pcc)
             : base(data, exp, pcc)
@@ -42,10 +43,11 @@ namespace ME3Data.DataTypes.ScriptTypes
             if (PropertyFlags.HasFlag(PropertyFlags.Net))
                 ReplicateOffset = Data.ReadUInt16();
 
-            _UnkNameRef = Data.ReadNameRef();
-            UnkNameRef = PCC.GetName(_UnkNameRef); //associated with name properties?
+            _CategoryNameRef = Data.ReadNameRef();
+            Category = PCC.GetName(_CategoryNameRef);
 
-            _Unk2 = Data.ReadInt32();
+            ReplicateOffset = Data.ReadUInt16(); // TODO: verify, see code
+            ReplicateIndex = Data.ReadUInt16();
 
             return result;
         }

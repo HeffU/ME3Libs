@@ -101,6 +101,14 @@ namespace Tests
             var stream = new FileStream(path, FileMode.Open);
             var pcc = new PCCFile(new PCCStreamReader(stream), "SFXGame");
 
+            //var path = @"G:\Code\ME3\temp\BIOP_MP_COMMON.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "BIOP_MP_COMMON");
+
+            //var path = @"G:\Code\ME3\temp\TM\BioD_ProMar_750Finale.pcc";
+            //var stream = new FileStream(path, FileMode.Open);
+            //var pcc = new PCCFile(new PCCStreamReader(stream), "BioD_ProMar_750Finale");
+
             Assert.IsTrue(pcc.DeserializeTables());
             Assert.IsTrue(pcc.DeserializeObjects());
             var deps = pcc.ImportPackageNames;
@@ -118,7 +126,8 @@ namespace Tests
             pcc.LoadDependencies(loaded);*/
             Assert.IsTrue(pcc.ResolveLinks());
 
-            var dumpPath = @"G:\Code\ME3\temp\dump\";
+            var dumpPath = @"G:\Code\ME3\temp\dump\" + pcc.Name + @"\";
+            System.IO.Directory.CreateDirectory(dumpPath);
 
             foreach (var exp in pcc.Exports.Where(e => e.ClassName.ToLower() == "class"))
             {
